@@ -1,0 +1,7 @@
+service Backend:
+    Provides API
+    Maybe split into microservices later
+    tech = Litestar, sqlalchemy,
+           faststream
+    links:
+        --> Anti-fraud Service over HTTP
