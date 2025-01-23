@@ -1,0 +1,28 @@
+# serializer version: 1
+# name: test_with_real_file
+  '''
+  Text(This is a comment text)
+  Project(Blogging app without description: [])
+  Project(Blogging app: ['A simple blogging app architecture'])
+  Scope(context: Blogging app)
+  Entity(system Blogging System []: Text(Stores and manages blogs); Links[Link(--> Metrics System None [])])
+  Entity(external system Metrics System []: Text(Collects site metrics
+  We will use Yandex Metrics))
+  Entity(actor User []: Text(Uses blogging app. Reads and creates posts); Links[Link(--> Blogging System None ['Uses'])])
+  Entity(actor Admin []: Text(Blog moderator); Links[Link(--> Blogging System None ['Uses']); Link(--> Metrics System None ['Reviews post metrics'])])
+  Scope(containers: Blogging app)
+  Entity(service Frontend Service []: Text(UI); Attr(system = Blogging System); Attr(tech = Vite+Vue); Links[Link(--> Backend Service HTTP ['Send API requests'])])
+  Entity(service Backend []: Text(Provides API
+  Maybe split into microservices later); Attr(system = Blogging System); Attr(tech = Litestar, sqlalchemy); Links[Link(--> Metrics Service HTTP ['Send metrics info on each request']); Link(--> DB Service None ['Stores info'])])
+  Entity(service DB Service []: Attr(system = Blogging System); Attr(tech = Postgres))
+  Entity(external service Metrics Service []: Attr(system = Metrics System))
+  Scope(deployment: Blogging app)
+  Entity(deployment VPS Deployment []: Text(Docker containers with Docker compose); Deploy(Frontend Service Docker container); Deploy(Backend Service Docker container); Deploy(DB Service Docker container))
+  Entity(external deployment Provided Metrics ['Yandex']: Text(Metrics Service is already provided); Deploy(Metrics Service Cloud provider))
+  Scope(legend: Blogging app)
+  Legend(LegendSelector(type=<LegendSelectorType.CONTAINS_REGEX: 'contains'>, selector='Docker'): Text(Docker container deployment); Attr(bg = #aaaaff))
+  Legend(LegendSelector(type=<LegendSelectorType.HAS_TAG: 'tag'>, selector='Yandex'): Attr(bg = #777700))
+  Legend(LegendSelector(type=<LegendSelectorType.MATCHES_REGEX: '='>, selector='VPS Deployment'): Attr(bg = #cccccc))
+  Legend(LegendSelector(type=<LegendSelectorType.ENTITY_TYPE: 'entity'>, selector='system'): Attr(shape = rounded-rect))
+  '''
+# ---

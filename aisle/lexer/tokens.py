@@ -1,7 +1,7 @@
 """Contains token definitions."""
 
-from dataclasses import dataclass
 import enum
+from dataclasses import dataclass
 from typing import Final
 
 
@@ -37,10 +37,16 @@ class Token:
         return self.type == TokenType.KEYWORD and self.lexeme == pattern
 
     def __repr__(self):
+        """Convert to string repr."""
         return f"{self.type.name}{self.lexeme}"
 
+    @property
+    def human_readable_repr(self):
+        """Get beautiful version of __repr__."""
+        return f"{self.line}\t| {self.type.name: <10}    {self.lexeme}"
 
-KEYWORDS: Final[set[str]] = {
+
+KEYWORDS: Final[frozenset[str]] = frozenset((
     "scope",
     "context",
     "system",
@@ -52,13 +58,16 @@ KEYWORDS: Final[set[str]] = {
     "service",
     "deployment",
     "deploy",
-}
+    "legend",
+    "actor",
+    "project",
+))
 
-RESERVED_STRINGS: Final[set[str]] = {
+RESERVED_STRINGS: Final[frozenset[str]] = frozenset((
     *KEYWORDS,
     "-->",
     "<--",
     "<->",
     "---",
-    *set("()[]:=")
-}
+    *set('()[]:="'),
+))

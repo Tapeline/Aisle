@@ -1,3 +1,5 @@
+"""Contains lexer tests."""
+from pathlib import Path
 from typing import Final
 
 import pytest
@@ -6,7 +8,7 @@ from aisle.lexer.lexer import Lexer
 
 
 @pytest.mark.parametrize(
-    "src,expected",
+    ("src", "expected"),
     [
         (
             ":=()[]",
@@ -25,7 +27,7 @@ from aisle.lexer.lexer import Lexer
         ),
         (
             "scope",
-            ["KEYWORDscope"]
+            ["KEYWORDscope"],
         ),
         (
             "---<----><->",
@@ -48,13 +50,14 @@ from aisle.lexer.lexer import Lexer
     ],
 )
 def test_simple_tokens(src, expected):
+    """Test that simple tokens are processed correctly."""
     lexer = Lexer(src)
     tokens = lexer.scan()
     assert list(map(str, tokens)) == expected
 
 
 @pytest.mark.parametrize(
-    "src,expected",
+    ("src", "expected"),
     [
         (
             '"String"',
@@ -68,12 +71,13 @@ def test_simple_tokens(src, expected):
             ],
         ),
         (
-            '"Escape \\n \\r \\t \\f \\u0462 \\\\ \\\""',
-            ["TEXTEscape \n \r \t \f \u0462 \\ \""],
+            '"Escape \\n \\r \\t \\f \\u0462 \\\\ \\""',
+            ['TEXTEscape \n \r \t \f \u0462 \\ "'],
         ),
-    ]
+    ],
 )
 def test_strings(src, expected):
+    """Test that strings are processed correctly."""
     lexer = Lexer(src)
     tokens = lexer.scan()
     assert list(map(str, tokens)) == expected
@@ -87,20 +91,20 @@ code_all_quoted: Final[str] = (
     '        --> "Anti-fraud Service" over "HTTP"'
 )
 code_unquoted: Final[str] = (
-    'service Backend:\n'
-    '    Provides API\\nMaybe split into microservices later\n'
-    '    tech = Litestar, sqlalchemy, \\nfaststream\n'
-    '    links:\n'
-    '        --> Anti-fraud Service over HTTP'
+    "service Backend:\n"
+    "    Provides API\\nMaybe split into microservices later\n"
+    "    tech = Litestar, sqlalchemy, \\nfaststream\n"
+    "    links:\n"
+    "        --> Anti-fraud Service over HTTP"
 )
 code_unquoted_multiline: Final[str] = (
-    'service Backend:\n'
-    '    Provides API\n'
-    '    Maybe split into microservices later\n'
-    '    tech = Litestar, sqlalchemy, \n'
-    '           faststream\n'
-    '    links:\n'
-    '        --> Anti-fraud Service over HTTP'
+    "service Backend:\n"
+    "    Provides API\n"
+    "    Maybe split into microservices later\n"
+    "    tech = Litestar, sqlalchemy, \n"
+    "           faststream\n"
+    "    links:\n"
+    "        --> Anti-fraud Service over HTTP"
 )
 expected_tokens: Final[list[str]] = [
     "KEYWORDservice",
@@ -129,14 +133,25 @@ expected_tokens: Final[list[str]] = [
 
 
 @pytest.mark.parametrize(
-    "src,expected",
+    ("src", "expected"),
     [
         (code_all_quoted, expected_tokens),
         (code_unquoted, expected_tokens),
         (code_unquoted_multiline, expected_tokens),
-    ]
+    ],
 )
 def test_complex_code(src, expected):
+    """Test that a complex code is lexed correctly."""
     lexer = Lexer(src)
     tokens = lexer.scan()
     assert list(map(str, tokens)) == expected
+
+
+def test_with_real_file(snapshot):
+    """Test that real project declaration is lexed correctly."""
+    with Path("./tests/fixtures/test_1.aisle").open("r") as src_file:
+        src = src_file.read()
+    lexer = Lexer(src)
+    tokens = lexer.scan()
+    tokens_str = "\n".join(map(str, tokens))
+    assert tokens_str == snapshot

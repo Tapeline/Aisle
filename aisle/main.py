@@ -1,22 +1,20 @@
+"""Main file."""
+from pathlib import Path
+
 from aisle.lexer.lexer import Lexer
+from aisle.parser.parser import Parser
 
 
 def main():  # pragma: no cover
-    src = (
-        'service Backend:\n'
-        '    Provides API\n'
-        '    Maybe split into microservices later\n'
-        '    tech = Litestar, sqlalchemy, \n'
-        '           faststream\n'
-        '    links:\n'
-        '        --> Anti-fraud Service over HTTP'
-    )
-    print(len(src))
+    """Entrypoint."""
+    with Path("../test.aisle").open("r") as f:
+        src = f.read()
     lexer = Lexer(src)
     tokens = lexer.scan()
-    for token in tokens:
-        print(token)
+    parser = Parser(src, tokens)
+    nodes = parser.parse()
+    print(*nodes, sep="\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

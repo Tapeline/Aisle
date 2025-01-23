@@ -1,0 +1,463 @@
+# serializer version: 1
+# name: test_with_real_file
+  '''
+  TEXTThis is a comment text
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDscope
+  KEYWORDproject
+  TEXTBlogging app without description
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDscope
+  KEYWORDproject
+  TEXTBlogging app
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  TEXTA simple blogging app architecture
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDscope
+  KEYWORDcontext
+  TEXTBlogging app
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDsystem
+  TEXTBlogging System
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  TEXTStores and manages blogs
+  NEWLINE
+  
+  INDENT    
+  KEYWORDlinks
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  INDENT    
+  ARROW_R-->
+  TEXTMetrics System
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDexternal
+  KEYWORDsystem
+  TEXTMetrics System
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  TEXTCollects site metrics
+  We will use Yandex Metrics
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDactor
+  TEXTUser
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  TEXTUses blogging app. Reads and creates posts
+  NEWLINE
+  
+  INDENT    
+  KEYWORDlinks
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  INDENT    
+  ARROW_R-->
+  TEXTBlogging System
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  INDENT    
+  INDENT    
+  TEXTUses
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDactor
+  TEXTAdmin
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  TEXTBlog moderator
+  NEWLINE
+  
+  INDENT    
+  KEYWORDlinks
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  INDENT    
+  ARROW_R-->
+  TEXTBlogging System
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  INDENT    
+  INDENT    
+  TEXTUses
+  NEWLINE
+  
+  INDENT    
+  INDENT    
+  ARROW_R-->
+  TEXTMetrics System
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  INDENT    
+  INDENT    
+  TEXTReviews post metrics
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDscope
+  KEYWORDcontainers
+  TEXTBlogging app
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDservice
+  TEXTFrontend Service
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  TEXTUI
+  NEWLINE
+  
+  INDENT    
+  KEYWORDsystem
+  ASSIGN=
+  TEXTBlogging System
+  NEWLINE
+  
+  INDENT    
+  KEYWORDtech
+  ASSIGN=
+  TEXTVite+Vue
+  NEWLINE
+  
+  INDENT    
+  KEYWORDlinks
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  INDENT    
+  ARROW_R-->
+  TEXTBackend Service
+  KEYWORDover
+  TEXTHTTP
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  INDENT    
+  INDENT    
+  TEXTSend API requests
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDservice
+  TEXTBackend
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  TEXTProvides API
+  Maybe split into microservices later
+  NEWLINE
+  
+  NEWLINE
+  
+  INDENT    
+  KEYWORDsystem
+  ASSIGN=
+  TEXTBlogging System
+  NEWLINE
+  
+  INDENT    
+  KEYWORDtech
+  ASSIGN=
+  TEXTLitestar, sqlalchemy
+  NEWLINE
+  
+  INDENT    
+  KEYWORDlinks
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  INDENT    
+  ARROW_R-->
+  TEXTMetrics Service
+  KEYWORDover
+  TEXTHTTP
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  INDENT    
+  INDENT    
+  TEXTSend metrics info on each request
+  NEWLINE
+  
+  INDENT    
+  INDENT    
+  ARROW_R-->
+  TEXTDB Service
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  INDENT    
+  INDENT    
+  TEXTStores info
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDservice
+  TEXTDB Service
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  KEYWORDsystem
+  ASSIGN=
+  TEXTBlogging System
+  NEWLINE
+  
+  INDENT    
+  KEYWORDtech
+  ASSIGN=
+  TEXTPostgres
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDexternal
+  KEYWORDservice
+  TEXTMetrics Service
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  KEYWORDsystem
+  ASSIGN=
+  TEXTMetrics System
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDscope
+  KEYWORDdeployment
+  TEXTBlogging app
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDdeployment
+  TEXTVPS Deployment
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  TEXTDocker containers with Docker compose
+  NEWLINE
+  
+  INDENT    
+  KEYWORDdeploy
+  TEXTFrontend Service
+  ASSIGN=
+  TEXTDocker container
+  NEWLINE
+  
+  INDENT    
+  KEYWORDdeploy
+  TEXTBackend Service
+  ASSIGN=
+  TEXTDocker container
+  NEWLINE
+  
+  INDENT    
+  KEYWORDdeploy
+  TEXTDB Service
+  ASSIGN=
+  TEXTDocker container
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDexternal
+  KEYWORDdeployment
+  TEXTProvided Metrics
+  LBRACKET[
+  TEXTYandex
+  RBRACKET]
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  TEXTMetrics Service is already provided
+  NEWLINE
+  
+  INDENT    
+  KEYWORDdeploy
+  TEXTMetrics Service
+  ASSIGN=
+  TEXTCloud provider
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDscope
+  KEYWORDlegend
+  TEXTBlogging app
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  LBRACKET[
+  TEXTcontains
+  TEXTDocker
+  RBRACKET]
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  TEXTDocker container deployment
+  NEWLINE
+  
+  INDENT    
+  TEXTbg
+  ASSIGN=
+  TEXT#aaaaff
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  LBRACKET[
+  TEXTtag
+  TEXTYandex
+  RBRACKET]
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  TEXTbg
+  ASSIGN=
+  TEXT#777700
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  LBRACKET[
+  ASSIGN=
+  TEXTVPS Deployment
+  RBRACKET]
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  TEXTbg
+  ASSIGN=
+  TEXT#cccccc
+  NEWLINE
+  
+  NEWLINE
+  
+  NEWLINE
+  
+  KEYWORDsystem
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  TEXTshape
+  ASSIGN=
+  TEXTrounded-rect
+  NEWLINE
+  
+  '''
+# ---

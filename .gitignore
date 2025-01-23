@@ -1,0 +1,5 @@
+/htmlcov/
+.venv
+.env
+.coverage
+.import_linter_cache
