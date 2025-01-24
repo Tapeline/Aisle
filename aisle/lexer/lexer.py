@@ -254,6 +254,8 @@ class Lexer:
 
     def _next_line_on_same_level(self, subindent_level: int) -> bool:
         """Check if current line is preceded by at least n whitespaces."""
+        if self._line - 1 >= len(self._lines):
+            return False
         return self._lines[self._line - 1].startswith(" " * subindent_level)
 
 

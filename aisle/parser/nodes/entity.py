@@ -57,7 +57,7 @@ class EntityNode(Node):
         )
 
 
-class ProjectDef(Node):
+class ProjectDefNode(Node):
     """
     Represents a project definition.
 

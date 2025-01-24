@@ -15,7 +15,7 @@ from aisle.parser.nodes.entity import (
     DeployNode,
     EntityNode,
     EntityType,
-    ProjectDef,
+    ProjectDefNode,
 )
 from aisle.parser.nodes.legend import (
     LegendDeclarationNode,
@@ -278,14 +278,14 @@ class Parser:
             tags.append(tag.lexeme)
         return tags
 
-    def _parse_project_def(self) -> ProjectDef:
+    def _parse_project_def(self) -> ProjectDefNode:
         """Parse project definition."""
         name = self._require(
             TokenType.TEXT,
             message="Expected project name, but got {got}",
         )
         if self._match(TokenType.COLON) is None:
-            return ProjectDef(name.line, name.lexeme, [])
+            return ProjectDefNode(name.line, name.lexeme, [])
         description = []
         while self._match(TokenType.NEWLINE):
             if not self._match_n_indents(1):
@@ -296,7 +296,7 @@ class Parser:
                 message="Expected project description, but got {got}",
             )
             description.append(desc_token.lexeme)
-        return ProjectDef(name.line, name.lexeme, description)
+        return ProjectDefNode(name.line, name.lexeme, description)
 
     def _parse_context_entity(self) -> EntityNode:
         """Parse context scope entity."""

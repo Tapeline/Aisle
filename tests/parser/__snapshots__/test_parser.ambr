@@ -20,9 +20,9 @@
   Entity(deployment VPS Deployment []: Text(Docker containers with Docker compose); Deploy(Frontend Service Docker container); Deploy(Backend Service Docker container); Deploy(DB Service Docker container))
   Entity(external deployment Provided Metrics ['Yandex']: Text(Metrics Service is already provided); Deploy(Metrics Service Cloud provider))
   Scope(legend: Blogging app)
-  Legend(LegendSelector(type=<LegendSelectorType.CONTAINS_REGEX: 'contains'>, selector='Docker'): Text(Docker container deployment); Attr(bg = #aaaaff))
-  Legend(LegendSelector(type=<LegendSelectorType.HAS_TAG: 'tag'>, selector='Yandex'): Attr(bg = #777700))
-  Legend(LegendSelector(type=<LegendSelectorType.MATCHES_REGEX: '='>, selector='VPS Deployment'): Attr(bg = #cccccc))
-  Legend(LegendSelector(type=<LegendSelectorType.ENTITY_TYPE: 'entity'>, selector='system'): Attr(shape = rounded-rect))
+  Legend(LegendSelector(type=LegendSelectorType.CONTAINS_REGEX, selector='Docker'): Text(Docker container deployment); Attr(bg = #aaaaff))
+  Legend(LegendSelector(type=LegendSelectorType.HAS_TAG, selector='Yandex'): Attr(bg = #777700))
+  Legend(LegendSelector(type=LegendSelectorType.MATCHES_REGEX, selector='VPS Deployment'): Attr(bg = #cccccc))
+  Legend(LegendSelector(type=LegendSelectorType.ENTITY_TYPE, selector='system'): Attr(shape = rounded-rect))
   '''
 # ---

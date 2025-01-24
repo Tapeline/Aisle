@@ -147,6 +147,52 @@ def test_complex_code(src, expected):
     assert list(map(str, tokens)) == expected
 
 
+def test_multiline_edge_case():
+    """Cover """
+    src = (
+        "scope project Test\n"
+        "scope context Test\n"
+        "system TestSystem:\n"
+        "    description\n"
+        "    tech = Tech\n"
+        "    links:\n"
+        "        --> Test\n"
+    )
+    tokens = Lexer(src).scan()
+    expected = [
+        "KEYWORDscope",
+        "KEYWORDproject",
+        "TEXTTest",
+        "NEWLINE\n",
+        "KEYWORDscope",
+        "KEYWORDcontext",
+        "TEXTTest",
+        "NEWLINE\n",
+        "KEYWORDsystem",
+        "TEXTTestSystem",
+        "COLON:",
+        "NEWLINE\n",
+        "INDENT    ",
+        "TEXTdescription",
+        "NEWLINE\n",
+        "INDENT    ",
+        "KEYWORDtech",
+        "ASSIGN=",
+        "TEXTTech",
+        "NEWLINE\n",
+        "INDENT    ",
+        "KEYWORDlinks",
+        "COLON:",
+        "NEWLINE\n",
+        "INDENT    ",
+        "INDENT    ",
+        "ARROW_R-->",
+        "TEXTTest",
+        "NEWLINE\n"
+    ]
+    assert list(map(str, tokens)) == expected
+
+
 def test_with_real_file(snapshot):
     """Test that real project declaration is lexed correctly."""
     with Path("./tests/fixtures/test_1.aisle").open("r") as src_file:

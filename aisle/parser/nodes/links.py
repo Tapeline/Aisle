@@ -14,6 +14,12 @@ class LinkType(enum.Enum):
     BIDIRECTIONAL = "<->"
     NON_DIRECTED = "---"
 
+    def __repr__(self):
+        return f"LinkType.{self.name}"
+
+    def __str__(self):
+        return f"LinkType.{self.name}"
+
 
 class LinkNode(Node):
     """

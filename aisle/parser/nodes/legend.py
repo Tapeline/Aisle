@@ -16,6 +16,12 @@ class LegendSelectorType(Enum):
     MATCHES_REGEX = "="
     ENTITY_TYPE = "entity"
 
+    def __repr__(self):
+        return f"LegendSelectorType.{self.name}"
+
+    def __str__(self):
+        return f"LegendSelectorType.{self.name}"
+
 
 @frozen
 class LegendSelector:
