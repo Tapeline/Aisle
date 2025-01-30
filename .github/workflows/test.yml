@@ -1,0 +1,43 @@
+name: test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+
+permissions:
+  contents: read
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install poetry
+        run: |
+          pip install -U pip
+          pip install poetry
+      - name: Install dependencies
+        run: |
+          poetry install
+      - name: Run tests
+        run: coverage run -m pytest tests
+      - name: Check MyPy
+        run: mypy aisle
+      - name: Check Ruff
+        run: ruff check
+      - name: Check WPS
+        run: flake8 aisle tests
+      - name: Check imports
+        run: lint-imports
