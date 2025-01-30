@@ -1,0 +1,89 @@
+# serializer version: 1
+# name: test_cli
+  '''
+  @startuml
+  !include <C4/C4_Context>
+  Person(User, "User", "Uses blogging app. Reads and creates posts",$tags="")
+  
+  Person(Admin, "Admin", "Blog moderator",$tags="")
+  
+  System(Blogging_System, "Blogging System", "Stores and manages blogs",$tags="")
+  
+  System_Ext(Metrics_System, "Metrics System", "Collects site metrics\nWe will use Yandex Metrics",$tags="")
+  
+  Rel(User, Blogging_System, "Uses","")
+  
+  Rel(Admin, Blogging_System, "Uses","")
+  
+  Rel(Admin, Metrics_System, "Reviews post metrics","")
+  
+  Rel(Blogging_System, Metrics_System, "","")
+  @enduml
+  @startuml
+  !include <C4/C4_Container>
+  System_Boundary(Blogging_System,"Blogging System"){
+      Container(Frontend_Service, "Frontend Service", "UI",$tags="")
+      Container(Backend_Service, "Backend Service", "Provides API\nMaybe split into microservices later",$tags="")
+      Container(DB_Service, "DB Service", "",$tags="")
+  }
+  
+  System_Boundary(Metrics_System,"Metrics System"){
+      Container_Ext(Metrics_Service, "Metrics Service", "",$tags="")
+  }
+  
+  Person(User, "User", "Uses blogging app. Reads and creates posts",$tags="")
+  
+  Person(Admin, "Admin", "Blog moderator",$tags="")
+  
+  Rel(Frontend_Service, Backend_Service, "Send API requests","HTTP")
+  
+  Rel(User, Frontend_Service, "","")
+  
+  Rel(Admin, Frontend_Service, "","")
+  
+  Rel(Backend_Service, Metrics_Service, "Send metrics info on each request","HTTP")
+  
+  Rel(Backend_Service, DB_Service, "Stores info","")
+  @enduml
+  @startuml
+  !include <C4/C4_Deployment>
+  Boundary(VPS_Deployment,"VPS Deployment",$descr="Docker containers with Docker compose"){
+      Boundary(Docker_compose,"Docker compose",$descr=""){
+          Node(Frontend_Service,"Frontend Service",$descr="Docker container")
+          Node(Backend_Service,"Backend Service",$descr="Docker container")
+          Node(DB_Service,"DB Service",$descr="Docker container")
+      }
+  }
+  
+  Boundary(Provided_Metrics,"Provided Metrics",$descr="Metrics Service is already provided"){
+      Node(Metrics_Service,"Metrics Service",$descr="Cloud provider")
+  }
+  @enduml
+  
+  '''
+# ---
+# name: test_cli_analyser_error
+  '''
+  [31mException while analysing node Project(Some Other Project: [])
+  At line: 2
+  2 |  scope project Some Other Project
+  Found project definition, but project was already defined.[0m
+  
+  '''
+# ---
+# name: test_cli_lexer_error
+  '''
+  [31mUnexpected character 'None'
+  At line 1:
+  1 |  -[0m
+  
+  '''
+# ---
+# name: test_cli_parser_error
+  '''
+  [31mParser: Expected one of (<TokenType.ARROW_L: 6>, <TokenType.ARROW_R: 5>, <TokenType.ARROW_BI_DIR: 7>, <TokenType.ARROW_NO_DIR: 8>) tokens, but got 'NOT AN ARROW'
+  At line 4:
+  4 |          NOT AN ARROW[0m
+  
+  '''
+# ---

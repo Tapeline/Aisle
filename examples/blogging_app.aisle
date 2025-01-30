@@ -97,6 +97,8 @@ external deployment Provided Metrics [Yandex]:
 
 scope legend Blogging app
 
+This section is not really implemented yet
+
 
 [contains "Docker"]:
     "Docker container deployment"

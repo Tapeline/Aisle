@@ -9,6 +9,7 @@ license = {text = "GNU GPL v3.0"}
 readme = "README.md"
 requires-python = ">=3.12,<4.0"
 dependencies = [
+    "click (>=8.1.8,<9.0.0)"
 ]
 
 [build-system]
@@ -24,3 +25,6 @@ pytest-timeout = "^2.3.1"
 pytest-cov = "^6.0.0"
 syrupy = "^4.8.1"
 ruff = "^0.9.3"
+
+[tool.poetry.scripts]
+aisle = "aisle.main:main"
