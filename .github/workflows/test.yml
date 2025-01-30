@@ -32,12 +32,12 @@ jobs:
         run: |
           poetry install
       - name: Run tests
-        run: coverage run -m pytest tests
+        run: poetry run coverage run -m pytest tests
       - name: Check MyPy
-        run: mypy aisle
+        run: poetry run mypy aisle
       - name: Check Ruff
-        run: ruff check
+        run: poetry run ruff check
       - name: Check WPS
-        run: flake8 aisle tests
+        run: poetry run flake8 aisle tests
       - name: Check imports
-        run: lint-imports
+        run: poetry run lint-imports
