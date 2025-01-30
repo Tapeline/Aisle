@@ -6,6 +6,8 @@ from aisle.analyser.entities.project import ProjectEntity
 
 @dataclass
 class ActorEntity(ProjectEntity):
+    """Actor entity."""
+
     name: str
     description: str
     links: list[Link]
@@ -14,6 +16,8 @@ class ActorEntity(ProjectEntity):
 
 @dataclass
 class SystemEntity(ProjectEntity):
+    """System entity."""
+
     name: str
     description: str
     links: list[Link]

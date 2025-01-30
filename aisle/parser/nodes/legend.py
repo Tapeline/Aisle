@@ -17,6 +17,7 @@ class LegendSelectorType(Enum):
     ENTITY_TYPE = "entity"
 
     def __repr__(self):
+        """Get code repr of that enum."""
         return f"LegendSelectorType.{self.name}"
 
 

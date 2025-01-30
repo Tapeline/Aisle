@@ -6,6 +6,8 @@ from aisle.analyser.entities.project import ProjectEntity
 
 @dataclass
 class ServiceEntity(ProjectEntity):
+    """Service entity."""
+
     name: str
     description: str
     system: str | None

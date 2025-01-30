@@ -7,6 +7,7 @@ from aisle.lexer.exceptions import (
     StringNotClosedException,
     UnexpectedCharacterException,
 )
+from aisle.lexer.interfaces import AbstractLexer
 from aisle.lexer.tokens import (
     KEYWORDS,
     RESERVED_STRINGS,
@@ -15,7 +16,7 @@ from aisle.lexer.tokens import (
 )
 
 
-class Lexer:
+class Lexer(AbstractLexer):
     """Lexer implementation."""
 
     def __init__(

@@ -46,7 +46,7 @@ class UnexpectedTokenException(ParserException):
             got: Token | None = None,
             message: str | None = None,
     ) -> None:
-        """Create exception."""
+        """Create exception and format message."""
         super().__init__(
             (message or self.default_message).format(
                 expected=expected,

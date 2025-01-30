@@ -1,15 +1,13 @@
 """Main file."""
-import pprint
-from pathlib import Path
 
-from aisle.analyser.analyser import Analyser
-from aisle.analyser.entities.context import SystemEntity
-from aisle.analyser.entities.links import Link
-from aisle.analyser.entities.project import Project
-from aisle.codegen.generator import generate_context, generate_containers, generate_deployments
-from aisle.lexer.lexer import Lexer
-from aisle.parser.nodes.links import LinkType
-from aisle.parser.parser import Parser
+from pathlib import Path  # pragma: no cover
+
+from aisle.analyser.impl.analyser import Analyser  # pragma: no cover
+from aisle.codegen.impl.plantuml import (  # pragma: no cover
+    PlantUMLProjectGenerator,
+)
+from aisle.lexer.impl.lexer import Lexer  # pragma: no cover
+from aisle.parser.impl.parser import Parser  # pragma: no cover
 
 
 def main():  # pragma: no cover
@@ -22,10 +20,11 @@ def main():  # pragma: no cover
     nodes = parser.parse()
     analyser = Analyser(nodes)
     project = analyser.analyse()
-    Path("context.puml").write_text(generate_context(project))
-    Path("containers.puml").write_text(generate_containers(project))
-    Path("deployment.puml").write_text(generate_deployments(project))
+    gen = PlantUMLProjectGenerator(project)
+    Path("context.puml").write_text(gen.generate_context())
+    Path("containers.puml").write_text(gen.generate_containers())
+    Path("deployment.puml").write_text(gen.generate_deployments())
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

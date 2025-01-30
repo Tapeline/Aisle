@@ -1,23 +1,39 @@
 from collections.abc import Sequence
 from dataclasses import dataclass
+from types import MappingProxyType
 
 from aisle.analyser.entities.containers import ServiceEntity
 from aisle.analyser.entities.context import ActorEntity, SystemEntity
-from aisle.analyser.entities.deployment import DeploymentEntity, ServiceDeployment
+from aisle.analyser.entities.deployment import (
+    DeploymentEntity,
+    ServiceDeployment,
+)
 from aisle.analyser.entities.links import Link
 from aisle.analyser.entities.project import Project
 from aisle.analyser.entities.styling import LegendStyling, StylingAttributes
-from aisle.analyser.exceptions import *
+from aisle.analyser.exceptions import (
+    DuplicateProjectDefinitionException,
+    NoProjectDefinedException,
+    UnmatchedProjectAndScopeNameException,
+    UnmatchedScopeAndEntityTypeException,
+    VisitMethodNotFoundError,
+)
+from aisle.analyser.interfaces import AbstractAnalyser
 from aisle.parser.nodes.attribute import AttrNode
 from aisle.parser.nodes.base import Node
-from aisle.parser.nodes.entity import ProjectDefNode, EntityNode, EntityType, DeployNode
+from aisle.parser.nodes.entity import (
+    DeployNode,
+    EntityNode,
+    EntityType,
+    ProjectDefNode,
+)
 from aisle.parser.nodes.legend import LegendDeclarationNode
-from aisle.parser.nodes.links import LinkCollectionNode
+from aisle.parser.nodes.links import LinkCollectionNode, LinkNode
 from aisle.parser.nodes.scope import ScopeNode, ScopeType
 from aisle.parser.nodes.text import TextNode
 
 
-class AnalyserBase:
+class _AnalyserBase:
     def _visit(self, node: Node):
         class_name = node.__class__.__name__
         self._pre_visit(node)
@@ -32,21 +48,37 @@ class AnalyserBase:
 
 @dataclass
 class Scope:
+    """Analyser scope."""
+
     type: ScopeType
     name: str
 
 
-class Analyser(AnalyserBase):
+_ALLOWED_ENTITY_TYPES = MappingProxyType({
+    ScopeType.CONTEXT: {EntityType.ACTOR, EntityType.SYSTEM},
+    ScopeType.CONTAINERS: {EntityType.SERVICE},
+    ScopeType.DEPLOYMENT: {EntityType.DEPLOYMENT},
+})
+
+
+class Analyser(AbstractAnalyser, _AnalyserBase):
+    """Default analyser impl."""
+
     def __init__(self, nodes: Sequence[Node]):
+        """Create analyser."""
         self.project: Project | None = None
         self.scope: Scope | None = None
         self.nodes = nodes
 
     def analyse(self) -> Project:
+        """Analyse AST and create project."""
         for node in self.nodes:
             self._visit(node)
         if self.project is None:
-            raise NoProjectDefinedException(Node(0), message="No project found")
+            raise NoProjectDefinedException(
+                Node(0),
+                message="No project found"
+            )
         return self.project
 
     def _pre_visit(self, node: Node):
@@ -74,25 +106,21 @@ class Analyser(AnalyserBase):
             )
         self.scope = Scope(node.scope_type, node.scope_name)
 
-    def _ensure_entity_applicable(self, entity: EntityNode):  # pragma: no cover
+    def _ensure_entity_applicable(  # pragma: no cover
+            self,
+            entity: EntityNode
+    ):
         if self.scope is None:
             raise UnmatchedScopeAndEntityTypeException(
                 entity,
                 scope_type=None,
                 entity_type=entity.type.value
             )
-        s_type = self.scope.type
-        e_type = entity.type
-        if not (
-            s_type == ScopeType.CONTEXT and e_type == EntityType.ACTOR
-            or s_type == ScopeType.CONTEXT and e_type == EntityType.SYSTEM
-            or s_type == ScopeType.CONTAINERS and e_type == EntityType.SERVICE
-            or s_type == ScopeType.DEPLOYMENT and e_type == EntityType.DEPLOYMENT
-        ):
+        if entity.type not in _ALLOWED_ENTITY_TYPES[self.scope.type]:
             raise UnmatchedScopeAndEntityTypeException(
                 entity,
-                scope_type=s_type.value,
-                entity_type=e_type.value
+                scope_type=self.scope.type.value,
+                entity_type=entity.type.value
             )
 
     def _visit_EntityNode(self, node: EntityNode):
@@ -117,10 +145,10 @@ class Analyser(AnalyserBase):
             node.name: node.value
             for node in body if isinstance(node, AttrNode)
         }
-        links = []
+        collected_links: list[LinkNode] = []
         for node in body:
             if isinstance(node, LinkCollectionNode):
-                links.extend(node.links)
+                collected_links.extend(node.links)
         links = [
             Link(
                 type=link.type,
@@ -128,7 +156,7 @@ class Analyser(AnalyserBase):
                 over=link.over,
                 description="\n".join(link.description)
             )
-            for link in links
+            for link in collected_links
         ]
         return description, links, attrs
 
@@ -143,23 +171,22 @@ class Analyser(AnalyserBase):
             ServiceDeployment(node.target, node.deploy_as)
             for node in body if isinstance(node, DeployNode)
         ]
-        inner_deployments = [
-            DeploymentEntity(
-                **(
-                    lambda node, i_desc, i_svc, i_inner: {
-                        "name": node.name,
-                        "description": i_desc,
-                        "tags": node.tags,
-                        "is_external": node.is_external,
-                        "deploys": i_svc,
-                        "inner_entities": i_inner
-                    }
-                )(node, *self._evaluate_deployment_body(node.body))
-            )
-            for node in body
-            if isinstance(node, EntityNode)
-            and node.type == EntityType.DEPLOYMENT
-        ]
+        inner_deployments = []
+        for node in body:
+            if not (
+                    isinstance(node, EntityNode)
+                    and node.type == EntityType.DEPLOYMENT
+            ):
+                continue
+            i_desc, i_svc, i_inner = self._evaluate_deployment_body(node.body)
+            inner_deployments.append(DeploymentEntity(
+                name=node.name,
+                description=i_desc,
+                tags=list(node.tags),
+                is_external=node.is_external,
+                deploys=i_svc,
+                inner_entities=i_inner
+            ))
         return description, svc_deployments, inner_deployments
 
     def _create_actor(self, node: EntityNode):

@@ -1,10 +1,11 @@
 """Contains lexer tests."""
+
 from pathlib import Path
 from typing import Final
 
 import pytest
 
-from aisle.lexer.lexer import Lexer
+from aisle.lexer.impl.lexer import Lexer
 from aisle.lexer.tokens import Token, TokenType
 
 
@@ -149,7 +150,7 @@ def test_complex_code(src, expected):
 
 
 def test_multiline_edge_case():
-    """Cover """
+    """Cover multiline edge case."""
     src = (
         "scope project Test\n"
         "scope context Test\n"
@@ -205,6 +206,7 @@ def test_with_real_file(snapshot):
 
 
 def test_token_human_readable_repr():
+    """Test Token::human_readable_repr method."""
     token = Token(TokenType.KEYWORD, "system", 2)
     expected = "2\t| KEYWORD       system"
     assert token.human_readable_repr == expected

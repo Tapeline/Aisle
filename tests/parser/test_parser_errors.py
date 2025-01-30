@@ -2,13 +2,13 @@
 
 import pytest
 
-from aisle.lexer.lexer import Lexer
+from aisle.lexer.impl.lexer import Lexer
 from aisle.parser.exceptions import (
     UnexpectedEndException,
     UnexpectedKeywordTokenException,
     UnexpectedTokenException,
 )
-from aisle.parser.parser import Parser
+from aisle.parser.impl.parser import Parser
 
 
 @pytest.mark.parametrize(

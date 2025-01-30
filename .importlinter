@@ -1,2 +1,50 @@
 [importlinter]
 root_package = aisle
+
+
+[importlinter:contract:isolate_lexer]
+name = Lexer knows nothing about other modules
+type = forbidden
+source_modules =
+    aisle.lexer
+forbidden_modules =
+    aisle.analyser
+    aisle.codegen
+    aisle.parser
+    aisle.main
+
+
+[importlinter:contract:isolate_parser]
+name = Parser knows nothing about other modules except lexer abstraction
+type = forbidden
+source_modules =
+    aisle.parser
+forbidden_modules =
+    aisle.analyser
+    aisle.codegen
+    aisle.main
+    aisle.lexer.impl
+
+
+[importlinter:contract:isolate_analyser]
+name = Analyser knows nothing about other modules except lexer and parser abstractions
+type = forbidden
+source_modules =
+    aisle.analyser
+forbidden_modules =
+    aisle.codegen
+    aisle.main
+    aisle.lexer.impl
+    aisle.parser.impl
+
+
+[importlinter:contract:isolate_codegen]
+name = Codegen knows nothing about other modules except lexer, parser and analyser abstractions
+type = forbidden
+source_modules =
+    aisle.codegen
+forbidden_modules =
+    aisle.main
+    aisle.lexer.impl
+    aisle.parser.impl
+    aisle.analyser.impl

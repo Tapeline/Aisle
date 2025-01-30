@@ -9,6 +9,7 @@ from aisle.parser.exceptions import (
     UnexpectedKeywordTokenException,
     UnexpectedTokenException,
 )
+from aisle.parser.interfaces import AbstractParser
 from aisle.parser.nodes.attribute import AttrNode
 from aisle.parser.nodes.base import Node
 from aisle.parser.nodes.entity import (
@@ -34,7 +35,7 @@ LINK_TOKEN_TO_TYPE = MappingProxyType({
 })
 
 
-class Parser:
+class Parser(AbstractParser):
     """Parser impl."""
 
     def __init__(self, source_code: str, tokens: Sequence[Token]):

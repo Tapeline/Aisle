@@ -7,7 +7,7 @@ from aisle.lexer.exceptions import (
     StringNotClosedException,
     UnexpectedCharacterException,
 )
-from aisle.lexer.lexer import Lexer
+from aisle.lexer.impl.lexer import Lexer
 
 
 @pytest.mark.parametrize(

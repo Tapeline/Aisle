@@ -2,17 +2,20 @@ from pathlib import Path
 
 import pytest
 
-from aisle.analyser.analyser import Analyser
 from aisle.analyser.entities.containers import ServiceEntity
 from aisle.analyser.entities.context import ActorEntity, SystemEntity
-from aisle.analyser.entities.deployment import DeploymentEntity, ServiceDeployment
+from aisle.analyser.entities.deployment import (
+    DeploymentEntity,
+    ServiceDeployment,
+)
 from aisle.analyser.entities.links import Link
 from aisle.analyser.entities.project import Project
 from aisle.analyser.entities.styling import LegendStyling, StylingAttributes
-from aisle.lexer.lexer import Lexer
-from aisle.parser.nodes.legend import LegendSelectorType, LegendSelector
+from aisle.analyser.impl.analyser import Analyser
+from aisle.lexer.impl.lexer import Lexer
+from aisle.parser.impl.parser import Parser
+from aisle.parser.nodes.legend import LegendSelector, LegendSelectorType
 from aisle.parser.nodes.links import LinkType
-from aisle.parser.parser import Parser
 
 
 @pytest.mark.parametrize(
@@ -233,6 +236,7 @@ from aisle.parser.parser import Parser
     ]
 )
 def test_analyser(src, expected):
+    """Test that analyser works correctly."""
     tokens = Lexer(src).scan()
     nodes = Parser(src, tokens).parse()
     project = Analyser(nodes).analyse()

@@ -1,8 +1,8 @@
 """Parser tests."""
 from pathlib import Path
 
-from aisle.lexer.lexer import Lexer
-from aisle.parser.parser import Parser
+from aisle.lexer.impl.lexer import Lexer
+from aisle.parser.impl.parser import Parser
 
 
 def test_with_real_file(snapshot):

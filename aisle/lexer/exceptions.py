@@ -30,7 +30,7 @@ class UnexpectedCharacterException(LexerException):
     """Raised when encountered unexpected character."""
 
     def __init__(self, char: str, source: str, line: int) -> None:
-        """Create exception."""
+        """Create exception and message."""
         super().__init__(f"Unexpected character '{char}'", source, line)
 
 
@@ -38,7 +38,7 @@ class StringNotClosedException(LexerException):
     """Raised when string not closed with a quote."""
 
     def __init__(self, source: str, line: int) -> None:
-        """Create exception."""
+        """Create exception and message."""
         super().__init__('String not closed with "', source, line)
 
 
@@ -46,7 +46,7 @@ class IncompleteUnicodeQuadException(LexerException):
     r"""Raise when \u escape found, but the code is invalid."""
 
     def __init__(self, source: str, line: int) -> None:
-        """Create exception."""
+        """Create exception and message."""
         super().__init__(
             r"\u escape found, but code is incomplete",
             source,

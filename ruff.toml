@@ -69,7 +69,11 @@ ignore = [
     # it's an exception, not an Error. Moreover, Error is smth unrecoverable,
     # while Exception is not so scary and more routine.
 
+    "S324",
+    # This project does not need security in any way
 
+    "RUF100",
+    # does not detect wps
 ]
 
 
@@ -80,4 +84,7 @@ ignore = [
     "S404", # subprocess calls are for tests
     "S603", # do not require `shell=True`
     "S607", # partial executable paths
+]
+"aisle/analyser/impl/analyser.py" = [
+    "N802", # no lowercase names because magic _visit_NodeName methods
 ]

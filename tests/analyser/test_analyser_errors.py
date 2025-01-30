@@ -1,14 +1,13 @@
 import pytest
 
-from aisle.analyser.analyser import Analyser
 from aisle.analyser.exceptions import (
+    DuplicateProjectDefinitionException,
     NoProjectDefinedException,
     UnmatchedProjectAndScopeNameException,
-    DuplicateProjectDefinitionException,
-    UnmatchedScopeAndEntityTypeException
 )
-from aisle.lexer.lexer import Lexer
-from aisle.parser.parser import Parser
+from aisle.analyser.impl.analyser import Analyser
+from aisle.lexer.impl.lexer import Lexer
+from aisle.parser.impl.parser import Parser
 
 
 @pytest.mark.parametrize(
