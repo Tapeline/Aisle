@@ -1,0 +1,8 @@
+scope project Test
+
+Test name clashes
+
+scope context Test
+
+system "Plus"
+actor "Plus+"

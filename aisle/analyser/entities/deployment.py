@@ -14,4 +14,6 @@ class DeploymentEntity(ProjectEntity):
     name: str
     description: str
     deploys: list[ServiceDeployment]
+    inner_entities: list["DeploymentEntity"]
     tags: list[str]
+    is_external: bool = False

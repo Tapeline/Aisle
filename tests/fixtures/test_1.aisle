@@ -81,9 +81,10 @@ scope deployment Blogging app
 
 deployment VPS Deployment:
     "Docker containers with Docker compose"
-    deploy Frontend Service = Docker container
-    deploy Backend Service = Docker container
-    deploy DB Service = Docker container
+    Docker compose [docker_compose]:
+        deploy Frontend Service = Docker container
+        deploy Backend Service = Docker container
+        deploy DB Service = Docker container
 
 
 external deployment Provided Metrics [Yandex]:

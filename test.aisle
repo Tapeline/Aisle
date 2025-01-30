@@ -46,9 +46,11 @@ service Frontend Service:
     links:
         --> Backend Service over HTTP:
             Send API requests
+        <-- User
+        <-- Admin
 
 
-service Backend:
+service Backend Service:
     Provides API
     Maybe split into microservices later
 
@@ -77,9 +79,13 @@ scope deployment Blogging app
 
 deployment VPS Deployment:
     "Docker containers with Docker compose"
-    deploy Frontend Service = Docker container
-    deploy Backend Service = Docker container
-    deploy DB Service = Docker container
+    Docker Container:
+        deploy Frontend Service
+    Docker Container:
+        Firejail:
+            deploy Backend Service
+    Docker Container:
+        deploy DB Service
 
 
 external deployment Provided Metrics [Yandex]:

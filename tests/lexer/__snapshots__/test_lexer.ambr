@@ -333,6 +333,15 @@
   NEWLINE
   
   INDENT    
+  TEXTDocker compose
+  LBRACKET[
+  TEXTdocker_compose
+  RBRACKET]
+  COLON:
+  NEWLINE
+  
+  INDENT    
+  INDENT    
   KEYWORDdeploy
   TEXTFrontend Service
   ASSIGN=
@@ -340,12 +349,14 @@
   NEWLINE
   
   INDENT    
+  INDENT    
   KEYWORDdeploy
   TEXTBackend Service
   ASSIGN=
   TEXTDocker container
   NEWLINE
   
+  INDENT    
   INDENT    
   KEYWORDdeploy
   TEXTDB Service

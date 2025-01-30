@@ -1,0 +1,17 @@
+scope project Test
+
+Test link directions
+
+
+scope context Test
+
+
+system System
+
+
+actor User:
+    links:
+        --> System
+        <-- System
+        <-> System
+        --- System

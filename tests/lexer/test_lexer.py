@@ -5,6 +5,7 @@ from typing import Final
 import pytest
 
 from aisle.lexer.lexer import Lexer
+from aisle.lexer.tokens import Token, TokenType
 
 
 @pytest.mark.parametrize(
@@ -201,3 +202,9 @@ def test_with_real_file(snapshot):
     tokens = lexer.scan()
     tokens_str = "\n".join(map(str, tokens))
     assert tokens_str == snapshot
+
+
+def test_token_human_readable_repr():
+    token = Token(TokenType.KEYWORD, "system", 2)
+    expected = "2\t| KEYWORD       system"
+    assert token.human_readable_repr == expected

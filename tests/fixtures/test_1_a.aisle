@@ -1,6 +1,7 @@
 scope project Blogging app:
     A simple blogging app architecture
 
+"This is a comment"
 
 
 
@@ -46,9 +47,11 @@ service Frontend Service:
     links:
         --> Backend Service over HTTP:
             Send API requests
+        <-- User
+        <-- Admin
 
 
-service Backend:
+service Backend Service:
     Provides API
     Maybe split into microservices later
 
@@ -77,9 +80,10 @@ scope deployment Blogging app
 
 deployment VPS Deployment:
     "Docker containers with Docker compose"
-    deploy Frontend Service = Docker container
-    deploy Backend Service = Docker container
-    deploy DB Service = Docker container
+    Docker compose [docker_compose]:
+        deploy Frontend Service = Docker container
+        deploy Backend Service = Docker container
+        deploy DB Service = Docker container
 
 
 external deployment Provided Metrics [Yandex]:

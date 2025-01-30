@@ -12,3 +12,4 @@ class ServiceEntity(ProjectEntity):
     tech: str | None
     links: list[Link]
     tags: list[str]
+    is_external: bool = False

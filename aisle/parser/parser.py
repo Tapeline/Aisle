@@ -547,16 +547,26 @@ class Parser:
         value = self._require(TokenType.TEXT).lexeme
         return AttrNode(token.line, name, value)
 
-    def _parse_deployment_body(self) -> Sequence[Node]:
+    def _parse_deployment_body(self, indent_lvl: int = 1) -> Sequence[Node]:
         """Parse body of deployment configuration."""
         nodes: list[Node] = []
         while self._match(TokenType.NEWLINE):
-            if not self._match_n_indents(1):
+            if not self._match_n_indents(indent_lvl):
                 self._i -= 1
                 break
             desc_token = self._match(TokenType.TEXT)
+            tags = self._parse_tags()
             if desc_token:
-                nodes.append(TextNode(desc_token.line, desc_token.lexeme))
+                if self._match(TokenType.COLON):
+                    nodes.append(EntityNode(
+                        self._previous.line,
+                        EntityType.DEPLOYMENT,
+                        desc_token.lexeme,
+                        tags,
+                        self._parse_deployment_body(indent_lvl + 1)
+                    ))
+                else:
+                    nodes.append(TextNode(desc_token.line, desc_token.lexeme))
                 continue
             deploy_token = self._match_kw("deploy")
             if deploy_token:
@@ -568,7 +578,7 @@ class Parser:
                 continue
             self._error(
                 UnexpectedTokenException,
-                expected=["attribute or text description"],
+                expected=["deploy, inner deploy or text description"],
                 got=self._peek,
             )
         return nodes

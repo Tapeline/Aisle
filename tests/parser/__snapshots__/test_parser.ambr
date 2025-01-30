@@ -17,7 +17,7 @@
   Entity(service DB Service []: Attr(system = Blogging System); Attr(tech = Postgres))
   Entity(external service Metrics Service []: Attr(system = Metrics System))
   Scope(deployment: Blogging app)
-  Entity(deployment VPS Deployment []: Text(Docker containers with Docker compose); Deploy(Frontend Service Docker container); Deploy(Backend Service Docker container); Deploy(DB Service Docker container))
+  Entity(deployment VPS Deployment []: Text(Docker containers with Docker compose); Entity(deployment Docker compose ['docker_compose']: Deploy(Frontend Service Docker container); Deploy(Backend Service Docker container); Deploy(DB Service Docker container)))
   Entity(external deployment Provided Metrics ['Yandex']: Text(Metrics Service is already provided); Deploy(Metrics Service Cloud provider))
   Scope(legend: Blogging app)
   Legend(LegendSelector(type=LegendSelectorType.CONTAINS_REGEX, selector='Docker'): Text(Docker container deployment); Attr(bg = #aaaaff))

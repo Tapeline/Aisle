@@ -32,10 +32,6 @@ class Token:
     lexeme: str
     line: int
 
-    def is_keyword(self, pattern: str) -> bool:
-        """Check if this token is a specific keyword."""
-        return self.type == TokenType.KEYWORD and self.lexeme == pattern
-
     def __repr__(self):
         """Convert to string repr."""
         return f"{self.type.name}{self.lexeme}"

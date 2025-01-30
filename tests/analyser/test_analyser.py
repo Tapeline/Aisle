@@ -43,8 +43,8 @@ from aisle.parser.parser import Parser
                         ],
                         tags=[],
                     ),
-                    "Backend": ServiceEntity(
-                        name="Backend",
+                    "Backend Service": ServiceEntity(
+                        name="Backend Service",
                         description=(
                                 "Provides API\n"
                                 "Maybe split into microservices later"
@@ -101,6 +101,18 @@ from aisle.parser.parser import Parser
                                 to="Backend Service",
                                 over="HTTP",
                                 description="Send API requests",
+                            ),
+                            Link(
+                                type=LinkType.INCOMING,
+                                to="User",
+                                over=None,
+                                description="",
+                            ),
+                            Link(
+                                type=LinkType.INCOMING,
+                                to="Admin",
+                                over=None,
+                                description="",
                             )
                         ],
                         tags=[],
@@ -112,6 +124,7 @@ from aisle.parser.parser import Parser
                         tech=None,
                         links=[],
                         tags=[],
+                        is_external=True
                     ),
                     "Metrics System": SystemEntity(
                         name="Metrics System",
@@ -121,6 +134,7 @@ from aisle.parser.parser import Parser
                         ),
                         links=[],
                         tags=[],
+                        is_external=True
                     ),
                     "Provided Metrics": DeploymentEntity(
                         name="Provided Metrics",
@@ -132,6 +146,8 @@ from aisle.parser.parser import Parser
                             )
                         ],
                         tags=["Yandex"],
+                        inner_entities=[],
+                        is_external=True
                     ),
                     "User": ActorEntity(
                         name="User",
@@ -151,21 +167,30 @@ from aisle.parser.parser import Parser
                     "VPS Deployment": DeploymentEntity(
                         name="VPS Deployment",
                         description="Docker containers with Docker compose",
-                        deploys=[
-                            ServiceDeployment(
-                                service_name="Frontend Service",
-                                deploy_as="Docker container"
-                            ),
-                            ServiceDeployment(
-                                service_name="Backend Service",
-                                deploy_as="Docker container"
-                            ),
-                            ServiceDeployment(
-                                service_name="DB Service",
-                                deploy_as="Docker container"
-                            ),
-                        ],
+                        deploys=[],
                         tags=[],
+                        inner_entities=[
+                            DeploymentEntity(
+                                name="Docker compose",
+                                description="",
+                                deploys=[
+                                    ServiceDeployment(
+                                        service_name="Frontend Service",
+                                        deploy_as="Docker container"
+                                    ),
+                                    ServiceDeployment(
+                                        service_name="Backend Service",
+                                        deploy_as="Docker container"
+                                    ),
+                                    ServiceDeployment(
+                                        service_name="DB Service",
+                                        deploy_as="Docker container"
+                                    ),
+                                ],
+                                inner_entities=[],
+                                tags=["docker_compose"]
+                            )
+                        ]
                     ),
                 },
                 styling=[
@@ -202,7 +227,7 @@ from aisle.parser.parser import Parser
                         description="",
                     ),
                 ],
-                comments=[],
+                comments=["This is a comment"],
             )
         )
     ]

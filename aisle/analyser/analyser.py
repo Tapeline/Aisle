@@ -23,11 +23,11 @@ class AnalyserBase:
         self._pre_visit(node)
         try:
             getattr(self, f"_visit_{class_name}")(node)
-        except AttributeError as error:
+        except AttributeError as error:  # pragma: no cover
             raise VisitMethodNotFoundError(class_name, self) from error
 
     def _pre_visit(self, node: Node):
-        ...
+        ...  # pragma: no cover
 
 
 @dataclass
@@ -74,7 +74,7 @@ class Analyser(AnalyserBase):
             )
         self.scope = Scope(node.scope_type, node.scope_name)
 
-    def _ensure_entity_applicable(self, entity: EntityNode):
+    def _ensure_entity_applicable(self, entity: EntityNode):  # pragma: no cover
         if self.scope is None:
             raise UnmatchedScopeAndEntityTypeException(
                 entity,
@@ -132,6 +132,36 @@ class Analyser(AnalyserBase):
         ]
         return description, links, attrs
 
+    def _evaluate_deployment_body(
+            self,
+            body: Sequence[Node]
+    ) -> tuple[str, list[ServiceDeployment], list[DeploymentEntity]]:
+        description = "\n".join(
+            node.text for node in body if isinstance(node, TextNode)
+        )
+        svc_deployments = [
+            ServiceDeployment(node.target, node.deploy_as)
+            for node in body if isinstance(node, DeployNode)
+        ]
+        inner_deployments = [
+            DeploymentEntity(
+                **(
+                    lambda node, i_desc, i_svc, i_inner: {
+                        "name": node.name,
+                        "description": i_desc,
+                        "tags": node.tags,
+                        "is_external": node.is_external,
+                        "deploys": i_svc,
+                        "inner_entities": i_inner
+                    }
+                )(node, *self._evaluate_deployment_body(node.body))
+            )
+            for node in body
+            if isinstance(node, EntityNode)
+            and node.type == EntityType.DEPLOYMENT
+        ]
+        return description, svc_deployments, inner_deployments
+
     def _create_actor(self, node: EntityNode):
         description, links, _ = self._evaluate_entity_body(node.body)
         entity = ActorEntity(
@@ -148,7 +178,8 @@ class Analyser(AnalyserBase):
             name=node.name,
             description=description,
             links=links,
-            tags=list(node.tags)
+            tags=list(node.tags),
+            is_external=node.is_external
         )
         self.project.namespace[entity.name] = entity
 
@@ -160,21 +191,22 @@ class Analyser(AnalyserBase):
             links=links,
             tech=attrs.get("tech"),
             system=attrs.get("system"),
-            tags=list(node.tags)
+            tags=list(node.tags),
+            is_external=node.is_external
         )
         self.project.namespace[entity.name] = entity
 
     def _create_deployment(self, node: EntityNode):
-        deploys = [
-            ServiceDeployment(deploy.target, deploy.deploy_as)
-            for deploy in node.body if isinstance(deploy, DeployNode)
-        ]
-        description, _, _ = self._evaluate_entity_body(node.body)
+        description, svc_deploys, inner_entities = (
+            self._evaluate_deployment_body(node.body)
+        )
         entity = DeploymentEntity(
             name=node.name,
             description=description,
-            deploys=deploys,
+            deploys=svc_deploys,
             tags=list(node.tags),
+            is_external=node.is_external,
+            inner_entities=inner_entities
         )
         self.project.namespace[entity.name] = entity
 

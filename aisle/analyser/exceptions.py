@@ -2,7 +2,7 @@ from aisle.parser.nodes.base import Node
 
 
 class VisitMethodNotFoundError(AttributeError):
-    def __init__(self, class_name: str, obj):
+    def __init__(self, class_name: str, obj):  # pragma: no cover
         super().__init__(obj=obj, name=f"Method visit_{class_name}")
         self.class_name = class_name
 
@@ -20,9 +20,6 @@ class AnalyserException(Exception):
         self.message = message or self.default_message
         for param_k, param_v in params.items():
             setattr(self, param_k, param_v)
-
-    def __getattr__(self, item):
-        return None
 
     def formatted_message(self, source_code: str):
         lines = source_code.splitlines()

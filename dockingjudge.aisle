@@ -1,0 +1,182 @@
+scope project Dockingjudge:
+    "Simple on-premise programming contests management system"
+
+
+
+
+scope context Dockingjudge
+
+
+system PCMS:
+    Programming Contest Management System
+    links:
+        <-> Monitoring System
+
+
+system Monitoring System
+
+
+actor Participant:
+    Contest participant
+    links:
+        --> PCMS over Web UI:
+            Reads statements and submits solutions
+
+
+actor Administrator:
+    PCMS Admin
+    links:
+        --> PCMS over Web UI:
+            Creates and manages contests
+        --> Monitoring System over Web UI:
+            Checks logs and metrics
+
+
+
+
+scope containers Dockingjudge
+
+
+service Web UI:
+    system = PCMS
+    tech = React, MUIv1, Nginx
+    links:
+        <-- Participant
+        <-- Administrator
+        --> Account Service over HTTP REST API
+        --> Contest Service over HTTP REST API
+        --> Solution Service over HTTP REST API
+        --> Solution Storage over HTTP
+
+
+service Account Service:
+    Manages accounts and performs auth
+    system = PCMS
+    tech = DRF
+    links:
+        --> Account DB
+
+
+service Account DB [database]:
+    Stores account info
+    system = PCMS
+    tech = Postgres
+
+
+
+service Contest Service:
+    CRUD for contests and tasks
+    system = PCMS
+    tech = DRF
+    links:
+        --> Account Service over HTTP REST API:
+            Auth & get user info
+        --> Contest DB
+
+
+service Contest DB [database]:
+    Stores contest and task info
+    system = PCMS
+    tech = Postgres
+
+
+
+service Solution Service:
+    CRUD for solutions & quiz solution checker
+    system = PCMS
+    tech = Python, Litestar, Faststream
+    links:
+        --> Account Service over HTTP REST API:
+            Auth & get user info
+        --> Contest Service over HTTP REST API:
+            Get contest & task info
+        --> Solution DB
+        --> Solution Storage
+        <-> MQ
+
+
+service Solution DB [database]:
+    Stores solutions
+    system = PCMS
+    tech = Postgres
+
+
+service Solution Storage [database]:
+    S3 object storage for code solutions
+    system = PCMS
+    tech = Minio
+
+
+service MQ:
+    Message queue
+    system = PCMS
+    tech = RabbitMQ
+
+
+service Judge Service:
+    Performs routing of solution check requests
+    system = PCMS
+    tech = Python, Faststream
+    links:
+        <-> MQ
+        --> Judgelet over HTTP REST API
+
+
+service Judgelet [scalable]:
+    Performs code solution checks
+    system = PCMS
+    tech = Python, FastAPI
+
+
+service Loki:
+    "Logs collector. Attached to all services"
+    system = Monitoring System
+    links:
+        --> PCMS
+
+
+service Prometheus:
+    "Metrics collector. Attached to all services"
+    system = Monitoring System
+    links:
+        --> PCMS
+
+
+service Grafana:
+    Web metrics UI
+    system = Monitoring System
+    links:
+        --> Loki
+        --> Prometheus
+
+
+service Alertmanager:
+    system = Monitoring System
+    links:
+        --> Loki
+        --> Prometheus
+
+
+
+
+scope deployment Dockingjudge
+
+
+deployment VPS Deployment:
+    Docker compose:
+        deploy Web UI = Docker container
+        deploy Account Service = Docker container
+        deploy Contest Service = Docker container
+        deploy Solution Service = Docker container
+        deploy Account DB = Docker container
+        deploy Contest DB = Docker container
+        deploy Solution DB = Docker container
+        deploy Solution Storage = Docker container
+        deploy MQ = Docker container
+        deploy Judge Service = Docker container
+        deploy Judgelet = Docker container
+
+        deploy Loki = Docker container
+        deploy Grafana = Docker container
+        deploy Alertmanager = Docker container
+        deploy Prometheus = Docker container

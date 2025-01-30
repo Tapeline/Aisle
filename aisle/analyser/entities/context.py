@@ -18,3 +18,4 @@ class SystemEntity(ProjectEntity):
     description: str
     links: list[Link]
     tags: list[str]
+    is_external: bool = False
