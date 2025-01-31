@@ -1,6 +1,5 @@
 import hashlib
 import string
-import textwrap
 from typing import Final
 
 from aisle.analyser.entities.containers import ServiceEntity
@@ -8,6 +7,7 @@ from aisle.analyser.entities.context import ActorEntity, SystemEntity
 from aisle.analyser.entities.deployment import DeploymentEntity
 from aisle.analyser.entities.links import Link
 from aisle.analyser.entities.project import Project, ProjectEntity
+from aisle.codegen import utils
 from aisle.codegen.interfaces import AbstractProjectGenerator
 from aisle.parser.nodes.links import LinkType
 
@@ -89,7 +89,7 @@ class CodeGenerator:
         return (
             boundary +
             "{\n" +
-            _indent(service_gen, 4) +
+            utils.indent(service_gen, 4) +
             "\n}"
         )
 
@@ -146,7 +146,7 @@ class CodeGenerator:
             f'$descr="{_safe_str(deployment.description)}"'
             f')' +
             "{\n" +
-            _indent("\n".join(code), 4) +
+            utils.indent("\n".join(code), 4) +
             "\n}"
         )
 
@@ -205,11 +205,6 @@ def _safe_name(name: str) -> str:
     if filtered_name == name:
         return filtered_name
     return f"{filtered_name}_{hash_part}"
-
-
-def _indent(text: str, indent_level: int) -> str:
-    """Indent by n spaces."""
-    return textwrap.indent(text, prefix=" " * indent_level)
 
 
 def _compile_tags(tags: list[str]) -> str:

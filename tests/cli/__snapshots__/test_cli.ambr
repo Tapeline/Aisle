@@ -1,5 +1,84 @@
 # serializer version: 1
-# name: test_cli
+# name: test_cli_analyser_error
+  '''
+  [31mException while analysing node Project(Some Other Project: [])
+  At line: 2
+  2 |  scope project Some Other Project
+  Found project definition, but project was already defined.[0m
+  
+  '''
+# ---
+# name: test_cli_lexer_error
+  '''
+  [31mUnexpected character 'None'
+  At line 1:
+  1 |  -[0m
+  
+  '''
+# ---
+# name: test_cli_mermaid
+  '''
+  C4Context
+      Person(User, "User", "Uses blogging app. Reads and creates posts",)
+  
+      Person(Admin, "Admin", "Blog moderator",)
+  
+      System(Blogging_System, "Blogging System", "Stores and manages blogs",)
+  
+      System_Ext(Metrics_System, "Metrics System", "Collects site metrics\nWe will use Yandex Metrics",)
+  
+      Rel(User, Blogging_System, "Uses","")
+  
+      Rel(Admin, Blogging_System, "Uses","")
+  
+      Rel(Admin, Metrics_System, "Reviews post metrics","")
+  
+      Rel(Blogging_System, Metrics_System, "","")C4Container
+      System_Boundary(Blogging_System,"Blogging System"){
+          Container(Frontend_Service, "Frontend Service", "UI",)
+          Container(Backend_Service, "Backend Service", "Provides API\nMaybe split into microservices later",)
+          Container(DB_Service, "DB Service", "",)
+      }
+  
+      System_Boundary(Metrics_System,"Metrics System"){
+          Container_Ext(Metrics_Service, "Metrics Service", "",)
+      }
+  
+      Person(User, "User", "Uses blogging app. Reads and creates posts",)
+  
+      Person(Admin, "Admin", "Blog moderator",)
+  
+      Rel(Frontend_Service, Backend_Service, "Send API requests","HTTP")
+  
+      Rel(User, Frontend_Service, "","")
+  
+      Rel(Admin, Frontend_Service, "","")
+  
+      Rel(Backend_Service, Metrics_Service, "Send metrics info on each request","HTTP")
+  
+      Rel(Backend_Service, DB_Service, "Stores info","")C4Deployment
+      Boundary(VPS_Deployment,"VPS Deployment",$descr="Docker containers with Docker compose"){
+          Boundary(Docker_compose,"Docker compose",$descr=""){
+              Node(Frontend_Service,"Frontend Service",$descr="Docker container")
+              Node(Backend_Service,"Backend Service",$descr="Docker container")
+              Node(DB_Service,"DB Service",$descr="Docker container")
+          }
+      }
+  
+      Boundary(Provided_Metrics,"Provided Metrics",$descr="Metrics Service is already provided"){
+          Node(Metrics_Service,"Metrics Service",$descr="Cloud provider")
+      }
+  '''
+# ---
+# name: test_cli_parser_error
+  '''
+  [31mParser: Expected one of (<TokenType.ARROW_L: 6>, <TokenType.ARROW_R: 5>, <TokenType.ARROW_BI_DIR: 7>, <TokenType.ARROW_NO_DIR: 8>) tokens, but got 'NOT AN ARROW'
+  At line 4:
+  4 |          NOT AN ARROW[0m
+  
+  '''
+# ---
+# name: test_cli_plantuml
   '''
   @startuml
   !include <C4/C4_Context>
@@ -62,28 +141,9 @@
   
   '''
 # ---
-# name: test_cli_analyser_error
+# name: test_cli_wrong_format
   '''
-  [31mException while analysing node Project(Some Other Project: [])
-  At line: 2
-  2 |  scope project Some Other Project
-  Found project definition, but project was already defined.[0m
-  
-  '''
-# ---
-# name: test_cli_lexer_error
-  '''
-  [31mUnexpected character 'None'
-  At line 1:
-  1 |  -[0m
-  
-  '''
-# ---
-# name: test_cli_parser_error
-  '''
-  [31mParser: Expected one of (<TokenType.ARROW_L: 6>, <TokenType.ARROW_R: 5>, <TokenType.ARROW_BI_DIR: 7>, <TokenType.ARROW_NO_DIR: 8>) tokens, but got 'NOT AN ARROW'
-  At line 4:
-  4 |          NOT AN ARROW[0m
+  [31mwrongfmt not found! Available formats: ('plantuml', 'mermaid')[0m
   
   '''
 # ---

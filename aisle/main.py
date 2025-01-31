@@ -1,11 +1,13 @@
 """Main file."""
 
 from pathlib import Path
+from types import MappingProxyType
 
 import click
 
 from aisle.analyser.exceptions import AnalyserException
 from aisle.analyser.impl.analyser import Analyser
+from aisle.codegen.impl.mermaid import MermaidProjectGenerator
 from aisle.codegen.impl.plantuml import (
     PlantUMLProjectGenerator,
 )
@@ -13,6 +15,12 @@ from aisle.lexer.exceptions import LexerException
 from aisle.lexer.impl.lexer import Lexer
 from aisle.parser.exceptions import ParserException
 from aisle.parser.impl.parser import Parser
+
+_GENERATORS = MappingProxyType({
+    "plantuml": PlantUMLProjectGenerator,
+    "mermaid": MermaidProjectGenerator,
+})
+_GENERATOR_NAMES = tuple(map(str, _GENERATORS.keys()))
 
 
 @click.group()
@@ -31,10 +39,19 @@ def aisle():
     default=None,
     help="directory to place generated files"
 )
+@click.option(
+    "--fmt",
+    default="plantuml",
+    help="output code format"
+)
 @click.argument("file")
-def generate(directory, encoding, file):
+def generate(directory, encoding, file, fmt):
     """Generate PlantUML diagrams from Aisle file."""
     src = Path(file).read_text(encoding=encoding)
+    if fmt not in _GENERATORS:
+        _print_error_and_exit(
+            f"{fmt} not found! Available formats: {_GENERATOR_NAMES}"
+        )
     try:  # noqa: WPS229
         lexer = Lexer(src)
         tokens = lexer.scan()
@@ -42,7 +59,7 @@ def generate(directory, encoding, file):
         nodes = parser.parse()
         analyser = Analyser(nodes)
         project = analyser.analyse()
-        generator = PlantUMLProjectGenerator(project)
+        generator = _GENERATORS[fmt](project)
         directory = directory or project.name
         _generate_and_write(directory, encoding, generator)
         click.echo("Generated")
