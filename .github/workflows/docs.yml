@@ -91,8 +91,9 @@ jobs:
           path: artifacts
 
       - name: Unzip artifact
-        run: unzip -O UTF-8 -qq "docs/${{ needs.build.outputs.artifact }}" -d dir
-
+        run: unzip -O UTF-8 -qq "artifacts/${{ needs.build.outputs.artifact }}" -d docs
+      - name: Remove artifact
+        run: rm -rf artifacts
       - name: Commit to gh-pages
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
