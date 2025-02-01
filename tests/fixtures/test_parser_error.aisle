@@ -1,4 +1,0 @@
-scope context test
-system test:
-    links:
-        NOT AN ARROW
