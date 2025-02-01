@@ -11,6 +11,22 @@ requires-python = ">=3.12,<4.0"
 dependencies = [
     "click (>=8.1.8,<9.0.0)"
 ]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Topic :: Documentation",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Documentation",
+]
+license-files = ["LICENSE*"]
+
+[project.urls]
+Homepage = "https://tapeline.github.io/Aisle"
+Issues = "https://github.com/Tapeline/Aisle/issues"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
