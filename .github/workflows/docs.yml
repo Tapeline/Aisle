@@ -91,7 +91,7 @@ jobs:
           path: artifacts
 
       - name: Remove old docs
-        run: rm -rm docs
+        run: rm -rf docs
 
       - name: Unzip artifact
         run: unzip -O UTF-8 -qq "artifacts/${{ needs.build.outputs.artifact }}" -d docs
