@@ -33,6 +33,6 @@ service with a reverse arrow:
         tech = React, Bootstrap
         links:
             --> Backend
-            <-- User
+            <![CDATA[<-- User]]>
 </code-block>
 </note>
