@@ -35,13 +35,13 @@
   
       Rel(Blogging_System, Metrics_System, "","")C4Container
       System_Boundary(Blogging_System,"Blogging System"){
-          Container(Frontend_Service, "Frontend Service", "UI",)
-          Container(Backend_Service, "Backend Service", "Provides API\nMaybe split into microservices later",)
-          Container(DB_Service, "DB Service", "",)
+          Container(Frontend_Service, "Frontend Service", "UI",,$techn="Vite+Vue")
+          Container(Backend_Service, "Backend Service", "Provides API\nMaybe split into microservices later",,$techn="Litestar, sqlalchemy")
+          Container(DB_Service, "DB Service", "",,$techn="Postgres")
       }
   
       System_Boundary(Metrics_System,"Metrics System"){
-          Container_Ext(Metrics_Service, "Metrics Service", "",)
+          Container_Ext(Metrics_Service, "Metrics Service", "",,$techn="None")
       }
   
       Person(User, "User", "Uses blogging app. Reads and creates posts",)
@@ -101,13 +101,13 @@
   @startuml
   !include <C4/C4_Container>
   System_Boundary(Blogging_System,"Blogging System"){
-      Container(Frontend_Service, "Frontend Service", "UI",$tags="")
-      Container(Backend_Service, "Backend Service", "Provides API\nMaybe split into microservices later",$tags="")
-      Container(DB_Service, "DB Service", "",$tags="")
+      Container(Frontend_Service, "Frontend Service", "UI",$tags="",$techn="Vite+Vue")
+      Container(Backend_Service, "Backend Service", "Provides API\nMaybe split into microservices later",$tags="",$techn="Litestar, sqlalchemy")
+      Container(DB_Service, "DB Service", "",$tags="",$techn="Postgres")
   }
   
   System_Boundary(Metrics_System,"Metrics System"){
-      Container_Ext(Metrics_Service, "Metrics Service", "",$tags="")
+      Container_Ext(Metrics_Service, "Metrics Service", "",$tags="",$techn="None")
   }
   
   Person(User, "User", "Uses blogging app. Reads and creates posts",$tags="")

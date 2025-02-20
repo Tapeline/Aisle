@@ -46,4 +46,4 @@ class MermaidProjectGenerator(AbstractProjectGenerator):
 
 
 def _rm_empty_tags(text: str) -> str:
-    return text.replace('$tags=""', "")
+    return text.replace('$tags=""', "").replace(',$techn=""', "")

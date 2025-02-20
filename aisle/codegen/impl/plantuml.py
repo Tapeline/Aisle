@@ -71,7 +71,8 @@ class CodeGenerator:
             f'{safe_name}, '
             f'"{_safe_str(service.name)}", '
             f'"{_safe_str(service.description)}",'
-            f'$tags="{tags}"'
+            f'$tags="{tags}",'
+            f'$techn="{service.tech}"'
             f')'
         )
 
