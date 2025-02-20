@@ -1,6 +1,6 @@
 [project]
 name = "aisle"
-version = "0.1.0"
+version = "0.1.1"
 description = "Easy AaC tool for creating architecture diagrams"
 authors = [
     {name = "Tapeline",email = "yt.redstone.mail@gmail.com"}
