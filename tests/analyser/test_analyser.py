@@ -9,7 +9,7 @@ from aisle.analyser.entities.deployment import (
     ServiceDeployment,
 )
 from aisle.analyser.entities.links import Link
-from aisle.analyser.entities.project import Project
+from aisle.analyser.entities.project import Namespace, Project
 from aisle.analyser.entities.styling import LegendStyling, StylingAttributes
 from aisle.analyser.impl.analyser import Analyser
 from aisle.lexer.impl.lexer import Lexer
@@ -26,7 +26,7 @@ from aisle.parser.nodes.links import LinkType
             Project(
                 name="Blogging app",
                 description="A simple blogging app architecture",
-                namespace={
+                namespace=Namespace(_ns={
                     "Admin": ActorEntity(
                         name="Admin",
                         description="Blog moderator",
@@ -195,7 +195,7 @@ from aisle.parser.nodes.links import LinkType
                             )
                         ]
                     ),
-                },
+                }),
                 styling=[
                     LegendStyling(
                         selector=LegendSelector(

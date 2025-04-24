@@ -3,10 +3,11 @@
 from collections.abc import Collection
 from typing import Final
 
+from aisle.exceptions import AisleError
 from aisle.lexer.tokens import Token, TokenType
 
 
-class ParserException(Exception):
+class ParserError(AisleError):
     """Base for all parser exceptions."""
 
     def __init__(self, message: str, source: str, line: int) -> None:
@@ -31,7 +32,7 @@ class ParserException(Exception):
         return self.formatted_message
 
 
-class UnexpectedTokenException(ParserException):
+class UnexpectedTokenError(ParserError):
     """Raised when an unexpected token is encountered."""
 
     default_message: Final[str] = (
@@ -57,7 +58,7 @@ class UnexpectedTokenException(ParserException):
         )
 
 
-class UnexpectedKeywordTokenException(ParserException):
+class UnexpectedKeywordTokenError(ParserError):
     """Raised when expected a keyword, but found something other."""
 
     default_message: Final[str] = (
@@ -83,7 +84,7 @@ class UnexpectedKeywordTokenException(ParserException):
         )
 
 
-class UnexpectedEndException(ParserException):
+class UnexpectedEndError(ParserError):
     """Raised when expected some token, but got end of file."""
 
     default_message: Final[str] = "Expected {expected}, but got end of file"

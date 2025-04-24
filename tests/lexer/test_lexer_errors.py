@@ -3,9 +3,9 @@
 import pytest
 
 from aisle.lexer.exceptions import (
-    IncompleteUnicodeQuadException,
-    StringNotClosedException,
-    UnexpectedCharacterException,
+    IncompleteUnicodeQuadError,
+    StringNotClosedError,
+    UnexpectedCharacterError,
 )
 from aisle.lexer.impl.lexer import Lexer
 
@@ -21,7 +21,7 @@ from aisle.lexer.impl.lexer import Lexer
 def test_unexpected_character(src):
     """Test that unexpected characters raise an exception."""
     lexer = Lexer(src)
-    with pytest.raises(UnexpectedCharacterException):
+    with pytest.raises(UnexpectedCharacterError):
         lexer.scan()
 
 
@@ -34,7 +34,7 @@ def test_unexpected_character(src):
 def test_string_not_closed(src):
     """Test that unclosed strings raise an exception."""
     lexer = Lexer(src)
-    with pytest.raises(StringNotClosedException):
+    with pytest.raises(StringNotClosedError):
         lexer.scan()
 
 
@@ -49,5 +49,5 @@ def test_string_not_closed(src):
 def test_bad_unicode_u_quad(src):
     r"""Test that bad \u escapes raise an exception."""
     lexer = Lexer(src)
-    with pytest.raises(IncompleteUnicodeQuadException):
+    with pytest.raises(IncompleteUnicodeQuadError):
         lexer.scan()

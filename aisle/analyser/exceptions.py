@@ -1,3 +1,4 @@
+from aisle.exceptions import AisleError
 from aisle.parser.nodes.base import Node
 
 
@@ -13,7 +14,7 @@ class VisitMethodNotFoundError(AttributeError):
         self.class_name = class_name
 
 
-class AnalyserException(Exception):
+class AnalyserError(AisleError):
     """Base for analyser exceptions."""
 
     default_message: str = "Invalid node"
@@ -42,7 +43,7 @@ class AnalyserException(Exception):
         )
 
 
-class NoProjectDefinedException(AnalyserException):
+class NoProjectDefinedError(AnalyserError):
     """Raised when no project was defined."""
 
     default_message: str = (
@@ -51,7 +52,7 @@ class NoProjectDefinedException(AnalyserException):
     )
 
 
-class DuplicateProjectDefinitionException(AnalyserException):
+class DuplicateProjectDefinitionError(AnalyserError):
     """Raised when >1 project defs found."""
 
     default_message: str = (
@@ -59,7 +60,7 @@ class DuplicateProjectDefinitionException(AnalyserException):
     )
 
 
-class UnmatchedProjectAndScopeNameException(AnalyserException):
+class UnmatchedProjectAndScopeNameError(AnalyserError):
     """Raised when scope name does not match project name."""
 
     default_message: str = (
@@ -68,7 +69,7 @@ class UnmatchedProjectAndScopeNameException(AnalyserException):
     )
 
 
-class UnmatchedScopeAndEntityTypeException(AnalyserException):
+class UnmatchedScopeAndEntityTypeError(AnalyserError):
     """Raised when declared entity is incompatible with scope."""
 
     default_message: str = (

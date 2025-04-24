@@ -1,9 +1,9 @@
 import pytest
 
 from aisle.analyser.exceptions import (
-    DuplicateProjectDefinitionException,
-    NoProjectDefinedException,
-    UnmatchedProjectAndScopeNameException,
+    DuplicateProjectDefinitionError,
+    NoProjectDefinedError,
+    UnmatchedProjectAndScopeNameError,
 )
 from aisle.analyser.impl.analyser import Analyser
 from aisle.lexer.impl.lexer import Lexer
@@ -22,7 +22,7 @@ def test_no_project_def(src):
     """Test that anything declared before project will fail."""
     tokens = Lexer(src).scan()
     nodes = Parser(src, tokens).parse()
-    with pytest.raises(NoProjectDefinedException):
+    with pytest.raises(NoProjectDefinedError):
         Analyser(nodes).analyse()
 
 
@@ -40,7 +40,7 @@ def test_wrong_scope_name(src):
     """Test that scope that doesn't match project's name will fail."""
     tokens = Lexer(src).scan()
     nodes = Parser(src, tokens).parse()
-    with pytest.raises(UnmatchedProjectAndScopeNameException):
+    with pytest.raises(UnmatchedProjectAndScopeNameError):
         Analyser(nodes).analyse()
 
 
@@ -58,5 +58,5 @@ def test_duplicate_project(src):
     """Test that declaring two projects at once will fail."""
     tokens = Lexer(src).scan()
     nodes = Parser(src, tokens).parse()
-    with pytest.raises(DuplicateProjectDefinitionException):
+    with pytest.raises(DuplicateProjectDefinitionError):
         Analyser(nodes).analyse()

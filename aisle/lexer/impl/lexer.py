@@ -3,9 +3,9 @@
 from collections.abc import Sequence
 
 from aisle.lexer.exceptions import (
-    IncompleteUnicodeQuadException,
-    StringNotClosedException,
-    UnexpectedCharacterException,
+    IncompleteUnicodeQuadError,
+    StringNotClosedError,
+    UnexpectedCharacterError,
 )
 from aisle.lexer.interfaces import AbstractLexer
 from aisle.lexer.tokens import (
@@ -119,14 +119,14 @@ class Lexer(AbstractLexer):
                 elif self._match("--"):
                     self._add_token(TokenType.ARROW_NO_DIR)
                 else:
-                    self._error(UnexpectedCharacterException, self._current)
+                    self._error(UnexpectedCharacterError, self._current)
             case "<":
                 if self._match("->"):
                     self._add_token(TokenType.ARROW_BI_DIR)
                 elif self._match("--"):
                     self._add_token(TokenType.ARROW_L)
                 else:
-                    self._error(UnexpectedCharacterException, self._current)
+                    self._error(UnexpectedCharacterError, self._current)
             case "\n":
                 self._add_token(TokenType.NEWLINE)
                 self._line += 1
@@ -154,7 +154,7 @@ class Lexer(AbstractLexer):
                 text += self._current
                 self._i += 1
         if not (not self._at_end and self._current == '"'):
-            self._error(StringNotClosedException)
+            self._error(StringNotClosedError)
         self._i += 1
         self._add_token(TokenType.TEXT, text)
 
@@ -179,7 +179,7 @@ class Lexer(AbstractLexer):
                 code = int(self._scan_unicode_quad(), 16)
                 return chr(code)
         self._error(  # noqa: RET503 (no return -> exception is raised)
-            UnexpectedCharacterException,
+            UnexpectedCharacterError,
             char=control
         )
 
@@ -189,9 +189,9 @@ class Lexer(AbstractLexer):
         for _ in range(4):
             c = self._next()
             if c is None:
-                self._error(IncompleteUnicodeQuadException)
+                self._error(IncompleteUnicodeQuadError)
             if c not in "0123456789abcdefABCDEF":
-                self._error(IncompleteUnicodeQuadException)
+                self._error(IncompleteUnicodeQuadError)
             code += c
         return code
 

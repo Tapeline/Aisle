@@ -1,4 +1,5 @@
 import textwrap
+from collections.abc import Callable
 
 
 def indent(text: str, indent_level: int) -> str:

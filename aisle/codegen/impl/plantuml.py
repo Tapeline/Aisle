@@ -11,6 +11,13 @@ from aisle.codegen import utils
 from aisle.codegen.interfaces import AbstractProjectGenerator
 from aisle.parser.nodes.links import LinkType
 
+_TAGS_FOR_DB: Final = (
+    "db", "database",
+)
+_TAGS_FOR_QUEUE: Final = (
+    "queue",
+)
+
 
 class SafeNameStorage:
     """Automatically assigns safe names."""
@@ -51,9 +58,10 @@ class CodeGenerator:
         """Generate system code."""
         safe_name = self._safe_names[system.name]
         tags = _compile_tags(system.tags)
+        node_type = _get_node_type("System", system)
         suffix = "_Ext" if system.is_external else ""
         return (
-            f'System{suffix}('
+            f'{node_type}{suffix}('
             f'{safe_name}, '
             f'"{_safe_str(system.name)}", '
             f'"{_safe_str(system.description)}",'
@@ -65,9 +73,10 @@ class CodeGenerator:
         """Generate service (container) code."""
         safe_name = self._safe_names[service.name]
         tags = _compile_tags(service.tags)
+        node_type = _get_node_type("Container", service)
         suffix = "_Ext" if service.is_external else ""
         return (
-            f'Container{suffix}('
+            f'{node_type}{suffix}('
             f'{safe_name}, '
             f'"{_safe_str(service.name)}", '
             f'"{_safe_str(service.description)}",'
@@ -88,10 +97,10 @@ class CodeGenerator:
             f')'
         )
         return (
-            boundary +
-            "{\n" +
-            utils.indent(service_gen, 4) +
-            "\n}"
+                boundary +
+                "{\n" +
+                utils.indent(service_gen, 4) +
+                "\n}"
         )
 
     def gen_link(self, link_from: ProjectEntity, link: Link) -> str:
@@ -141,14 +150,14 @@ class CodeGenerator:
                 f')'
             )
         return (
-            f'Boundary('
-            f'{self._safe_names[deployment.name]},'
-            f'"{_safe_str(deployment.name)}",'
-            f'$descr="{_safe_str(deployment.description)}"'
-            f')' +
-            "{\n" +
-            utils.indent("\n".join(code), 4) +
-            "\n}"
+                f'Boundary('
+                f'{self._safe_names[deployment.name]},'
+                f'"{_safe_str(deployment.name)}",'
+                f'$descr="{_safe_str(deployment.description)}"'
+                f')' +
+                "{\n" +
+                utils.indent("\n".join(code), 4) +
+                "\n}"
         )
 
     def gen_context_map(self) -> str:  # noqa: WPS210
@@ -192,9 +201,9 @@ class CodeGenerator:
 
 
 _ALLOWED_CHARS: Final = (
-    string.ascii_letters +
-    string.digits +
-    "_"
+        string.ascii_letters +
+        string.digits +
+        "_"
 )
 
 
@@ -218,6 +227,17 @@ def _safe_str(text: str | None) -> str:
     if text is None:
         return ""
     return text.replace('"', r'\"').replace("\n", r"\n")
+
+
+def _get_node_type(
+        base_type: str,
+        service: ServiceEntity | SystemEntity
+) -> str:
+    if any(tag in _TAGS_FOR_DB for tag in service.tags):
+        return f"{base_type}Db"
+    if any(tag in _TAGS_FOR_QUEUE for tag in service.tags):
+        return f"{base_type}Queue"
+    return base_type
 
 
 class PlantUMLProjectGenerator(AbstractProjectGenerator):

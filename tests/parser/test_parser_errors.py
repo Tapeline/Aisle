@@ -4,9 +4,9 @@ import pytest
 
 from aisle.lexer.impl.lexer import Lexer
 from aisle.parser.exceptions import (
-    UnexpectedEndException,
-    UnexpectedKeywordTokenException,
-    UnexpectedTokenException,
+    UnexpectedEndError,
+    UnexpectedKeywordTokenError,
+    UnexpectedTokenError,
 )
 from aisle.parser.impl.parser import Parser
 
@@ -57,7 +57,7 @@ def test_unexpected_token(src):
     lexer = Lexer(src)
     tokens = lexer.scan()
     parser = Parser(src, tokens)
-    with pytest.raises(UnexpectedTokenException):
+    with pytest.raises(UnexpectedTokenError):
         parser.parse()
 
 
@@ -75,7 +75,7 @@ def test_unexpected_keyword(src):
     lexer = Lexer(src)
     tokens = lexer.scan()
     parser = Parser(src, tokens)
-    with pytest.raises(UnexpectedKeywordTokenException):
+    with pytest.raises(UnexpectedKeywordTokenError):
         parser.parse()
 
 
@@ -91,5 +91,5 @@ def test_unexpected_end(src):
     lexer = Lexer(src)
     tokens = lexer.scan()
     parser = Parser(src, tokens)
-    with pytest.raises(UnexpectedEndException):
+    with pytest.raises(UnexpectedEndError):
         parser.parse()

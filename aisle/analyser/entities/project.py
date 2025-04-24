@@ -1,8 +1,9 @@
 from collections.abc import Collection, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Protocol
 
 from aisle.analyser.entities.styling import LegendStyling
+from aisle.exceptions import AisleError
 
 if TYPE_CHECKING:  # pragma: no cover
     from aisle.analyser.entities.containers import ServiceEntity
@@ -16,13 +17,42 @@ class ProjectEntity(Protocol):
     name: str
 
 
+class NameNotFoundError(AisleError):
+    """Raised when a name is not found."""
+
+    def __init__(self, name: str) -> None:
+        """Create exception and set name."""
+        self.name = name
+
+
+@dataclass
+class Namespace:
+    """Project namespace."""
+
+    _ns: dict[str, ProjectEntity] = field(default_factory=dict)
+
+    def __setitem__(self, key: str, value: ProjectEntity) -> None:
+        """Set name."""
+        self._ns[key] = value
+
+    def __getitem__(self, key: str) -> ProjectEntity:
+        """Get a name or raise custom exception."""
+        if key not in self._ns:
+            raise NameNotFoundError(key)
+        return self._ns[key]
+
+    def values(self) -> Collection[ProjectEntity]:
+        """Like dict::values."""
+        return self._ns.values()
+
+
 @dataclass
 class Project:
     """Represents an Aisle project."""
 
     name: str
     description: str
-    namespace: dict[str, ProjectEntity]
+    namespace: Namespace
     styling: list[LegendStyling]
     comments: list[str]
 

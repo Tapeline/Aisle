@@ -1,7 +1,8 @@
 """Contains lexer exceptions."""
+from aisle.exceptions import AisleError
 
 
-class LexerException(Exception):
+class LexerError(AisleError):
     """Base class for lexer exceptions."""
 
     def __init__(self, message: str, source: str, line: int) -> None:
@@ -26,7 +27,7 @@ class LexerException(Exception):
         return self.formatted_message
 
 
-class UnexpectedCharacterException(LexerException):
+class UnexpectedCharacterError(LexerError):
     """Raised when encountered unexpected character."""
 
     def __init__(self, char: str, source: str, line: int) -> None:
@@ -34,7 +35,7 @@ class UnexpectedCharacterException(LexerException):
         super().__init__(f"Unexpected character '{char}'", source, line)
 
 
-class StringNotClosedException(LexerException):
+class StringNotClosedError(LexerError):
     """Raised when string not closed with a quote."""
 
     def __init__(self, source: str, line: int) -> None:
@@ -42,7 +43,7 @@ class StringNotClosedException(LexerException):
         super().__init__('String not closed with "', source, line)
 
 
-class IncompleteUnicodeQuadException(LexerException):
+class IncompleteUnicodeQuadError(LexerError):
     r"""Raise when \u escape found, but the code is invalid."""
 
     def __init__(self, source: str, line: int) -> None:

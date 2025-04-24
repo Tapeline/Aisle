@@ -2,7 +2,7 @@
 
 import pytest
 
-from aisle.analyser.exceptions import NoProjectDefinedException
+from aisle.analyser.exceptions import NoProjectDefinedError
 from aisle.parser.nodes.text import TextNode
 
 
@@ -11,7 +11,7 @@ from aisle.parser.nodes.text import TextNode
     [
         (
             "Comment",
-            NoProjectDefinedException(node=TextNode(1, "Comment")),
+            NoProjectDefinedError(node=TextNode(1, "Comment")),
             "Exception while analysing node Text(Comment)\n"
             "At line: 1\n"
             "1 |  Comment\n"

@@ -9,13 +9,13 @@ from aisle.analyser.entities.deployment import (
     ServiceDeployment,
 )
 from aisle.analyser.entities.links import Link
-from aisle.analyser.entities.project import Project
+from aisle.analyser.entities.project import Namespace, Project
 from aisle.analyser.entities.styling import LegendStyling, StylingAttributes
 from aisle.analyser.exceptions import (
-    DuplicateProjectDefinitionException,
-    NoProjectDefinedException,
-    UnmatchedProjectAndScopeNameException,
-    UnmatchedScopeAndEntityTypeException,
+    DuplicateProjectDefinitionError,
+    NoProjectDefinedError,
+    UnmatchedProjectAndScopeNameError,
+    UnmatchedScopeAndEntityTypeError,
     VisitMethodNotFoundError,
 )
 from aisle.analyser.interfaces import AbstractAnalyser
@@ -75,7 +75,7 @@ class Analyser(AbstractAnalyser, _AnalyserBase):
         for node in self.nodes:
             self._visit(node)
         if self.project is None:
-            raise NoProjectDefinedException(
+            raise NoProjectDefinedError(
                 Node(0),
                 message="No project found"
             )
@@ -83,23 +83,23 @@ class Analyser(AbstractAnalyser, _AnalyserBase):
 
     def _pre_visit(self, node: Node):
         if self.project is None and not isinstance(node, ProjectDefNode):
-            raise NoProjectDefinedException(node)
+            raise NoProjectDefinedError(node)
 
     def _visit_ProjectDefNode(self, node: ProjectDefNode):
         if self.project is not None:
-            raise DuplicateProjectDefinitionException(node)
+            raise DuplicateProjectDefinitionError(node)
         description = "\n".join(node.description)
         self.project = Project(
             name=node.name,
             description=description,
-            namespace={},
+            namespace=Namespace(),
             styling=[],
             comments=[]
         )
 
     def _visit_ScopeNode(self, node: ScopeNode):
         if self.project.name != node.scope_name:
-            raise UnmatchedProjectAndScopeNameException(
+            raise UnmatchedProjectAndScopeNameError(
                 node,
                 scope_name=node.scope_name,
                 project_name=self.project.name
@@ -111,13 +111,13 @@ class Analyser(AbstractAnalyser, _AnalyserBase):
             entity: EntityNode
     ):
         if self.scope is None:
-            raise UnmatchedScopeAndEntityTypeException(
+            raise UnmatchedScopeAndEntityTypeError(
                 entity,
                 scope_type=None,
                 entity_type=entity.type.value
             )
         if entity.type not in _ALLOWED_ENTITY_TYPES[self.scope.type]:
-            raise UnmatchedScopeAndEntityTypeException(
+            raise UnmatchedScopeAndEntityTypeError(
                 entity,
                 scope_type=self.scope.type.value,
                 entity_type=entity.type.value

@@ -5,9 +5,9 @@ from types import MappingProxyType
 
 from aisle.lexer.tokens import Token, TokenType
 from aisle.parser.exceptions import (
-    UnexpectedEndException,
-    UnexpectedKeywordTokenException,
-    UnexpectedTokenException,
+    UnexpectedEndError,
+    UnexpectedKeywordTokenError,
+    UnexpectedTokenError,
 )
 from aisle.parser.interfaces import AbstractParser
 from aisle.parser.nodes.attribute import AttrNode
@@ -108,7 +108,7 @@ class Parser(AbstractParser):
         token = self._match(expected_type, extra_condition)
         if token is None:
             self._error(
-                UnexpectedTokenException,
+                UnexpectedTokenError,
                 expected=[expected_type],
                 got=self._peek,
                 message=message,
@@ -151,7 +151,7 @@ class Parser(AbstractParser):
         token = self._match(TokenType.KEYWORD, lambda t: t.lexeme == keyword)
         if token is None:
             self._error(
-                UnexpectedKeywordTokenException,
+                UnexpectedKeywordTokenError,
                 expected=[keyword],
                 got=self._peek,
                 message=message,
@@ -167,7 +167,7 @@ class Parser(AbstractParser):
         token = self._match_any_kw(*keywords)
         if token is None:
             self._error(
-                UnexpectedKeywordTokenException,
+                UnexpectedKeywordTokenError,
                 expected=keywords,
                 got=self._peek,
                 message=message,
@@ -183,7 +183,7 @@ class Parser(AbstractParser):
         token = self._match_any_type(*types)
         if token is None:
             self._error(
-                UnexpectedTokenException,
+                UnexpectedTokenError,
                 expected=types,
                 got=self._peek,
                 message=message,
@@ -262,7 +262,7 @@ class Parser(AbstractParser):
         if node:
             return node
         self._error(  # noqa: RET503 (no return -> exception is raised)
-            UnexpectedTokenException,
+            UnexpectedTokenError,
             message=(
                 "Expected scope, entity or a comment, "
                 "but got '{got.type.name}': '{got.lexeme}'"
@@ -391,13 +391,13 @@ class Parser(AbstractParser):
             )
             if self._at_end:
                 self._error(
-                    UnexpectedEndException,
+                    UnexpectedEndError,
                     expected="legend tag",
                 )
             selector_type = self._peek.lexeme
             if selector_type not in {"contains", "=", "tag"}:
                 self._error(
-                    UnexpectedTokenException,
+                    UnexpectedTokenError,
                     expected=["contains", "tag", "="],
                     got=self._peek,
                 )
@@ -430,7 +430,7 @@ class Parser(AbstractParser):
                 nodes.append(self._parse_links())
                 continue
             self._error(
-                UnexpectedTokenException,
+                UnexpectedTokenError,
                 expected=["text description or links"],
                 got=self._peek,
             )
@@ -505,14 +505,14 @@ class Parser(AbstractParser):
             if not self._at_end and self._peek.lexeme == "system":
                 if is_system:
                     self._error(
-                        UnexpectedTokenException,
+                        UnexpectedTokenError,
                         expected=expected,
                         got=self._peek,
                     )
                 nodes.append(self._parse_attr())
                 continue
             self._error(
-                UnexpectedTokenException,
+                UnexpectedTokenError,
                 expected=expected,
                 got=self._peek,
             )
@@ -523,7 +523,7 @@ class Parser(AbstractParser):
         attr = self._maybe_parse_attr()
         if attr is None:
             self._error(
-                UnexpectedTokenException,
+                UnexpectedTokenError,
                 expected=["attribute declaration"],
                 got=self._peek,
             )
@@ -578,7 +578,7 @@ class Parser(AbstractParser):
                 nodes.append(DeployNode(deploy_token.line, target, deploy_as))
                 continue
             self._error(
-                UnexpectedTokenException,
+                UnexpectedTokenError,
                 expected=["deploy, inner deploy or text description"],
                 got=self._peek,
             )
@@ -600,7 +600,7 @@ class Parser(AbstractParser):
                 nodes.append(TextNode(desc_token.line, desc_token.lexeme))
                 continue
             self._error(
-                UnexpectedTokenException,
+                UnexpectedTokenError,
                 expected=["attribute or text description"],
                 got=self._peek,
             )

@@ -5,15 +5,15 @@ from types import MappingProxyType
 
 import click
 
-from aisle.analyser.exceptions import AnalyserException
+from aisle.analyser.exceptions import AnalyserError
 from aisle.analyser.impl.analyser import Analyser
 from aisle.codegen.impl.mermaid import MermaidProjectGenerator
 from aisle.codegen.impl.plantuml import (
     PlantUMLProjectGenerator,
 )
-from aisle.lexer.exceptions import LexerException
+from aisle.lexer.exceptions import LexerError
 from aisle.lexer.impl.lexer import Lexer
-from aisle.parser.exceptions import ParserException
+from aisle.parser.exceptions import ParserError
 from aisle.parser.impl.parser import Parser
 
 _GENERATORS = MappingProxyType({
@@ -63,9 +63,9 @@ def generate(directory, encoding, file, fmt):
         directory = directory or project.name
         _generate_and_write(directory, encoding, generator)
         click.echo("Generated")
-    except (LexerException, ParserException) as exc:
+    except (LexerError, ParserError) as exc:
         _print_error_and_exit(exc.formatted_message)
-    except AnalyserException as exc:
+    except AnalyserError as exc:
         _print_error_and_exit(exc.formatted_message(src))
 
 
