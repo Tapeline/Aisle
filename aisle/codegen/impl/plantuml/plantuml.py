@@ -1,5 +1,6 @@
 import hashlib
 import string
+from types import MappingProxyType
 from typing import Final
 
 from aisle.analyser.entities.containers import ServiceEntity
@@ -7,16 +8,15 @@ from aisle.analyser.entities.context import ActorEntity, SystemEntity
 from aisle.analyser.entities.deployment import DeploymentEntity
 from aisle.analyser.entities.links import Link
 from aisle.analyser.entities.project import Project, ProjectEntity
+from aisle.analyser.entities.styling import LegendStyling, StylingAttributes
 from aisle.codegen import utils
+from aisle.codegen.impl.plantuml.constants import (
+    ALLOWED_CHARS,
+    STYLING_ATTR_MAP, TAGS_FOR_DB, TAGS_FOR_QUEUE,
+)
 from aisle.codegen.interfaces import AbstractProjectGenerator
+from aisle.parser.nodes.legend import LegendSelectorType
 from aisle.parser.nodes.links import LinkType
-
-_TAGS_FOR_DB: Final = (
-    "db", "database",
-)
-_TAGS_FOR_QUEUE: Final = (
-    "queue",
-)
 
 
 class SafeNameStorage:
@@ -199,18 +199,30 @@ class CodeGenerator:
         code = list(map(self.gen_deployment, self.project.get_deployments()))
         return "\n\n".join(code)
 
+    def gen_style_map(self) -> str:
+        """Generate style code."""
+        return "\n\n".join(
+            self.gen_style(style)
+            for style in self.project.styling
+        )
 
-_ALLOWED_CHARS: Final = (
-        string.ascii_letters +
-        string.digits +
-        "_"
-)
+    def gen_style(self, style: LegendStyling) -> str:
+        """Generate code for single styling node."""
+        if style.selector.type != LegendSelectorType.HAS_TAG:
+            # TODO: support for other types
+            return ""
+        return (
+            f"AddElementTag("
+            f'"{style.selector.selector}", '
+            f'{_gen_styling_attrs(style.attrs)}'
+            f')'
+        )
 
 
 def _safe_name(name: str) -> str:
     """Ensure name is safe to use as identifier."""
     name = name.replace(" ", "_")
-    filtered_name = "".join(char for char in name if char in _ALLOWED_CHARS)
+    filtered_name = "".join(char for char in name if char in ALLOWED_CHARS)
     hash_part = hashlib.md5(name.encode()).hexdigest()[:8]
     if filtered_name == name:
         return filtered_name
@@ -233,11 +245,23 @@ def _get_node_type(
         base_type: str,
         service: ServiceEntity | SystemEntity
 ) -> str:
-    if any(tag in _TAGS_FOR_DB for tag in service.tags):
+    if any(tag in TAGS_FOR_DB for tag in service.tags):
         return f"{base_type}Db"
-    if any(tag in _TAGS_FOR_QUEUE for tag in service.tags):
+    if any(tag in TAGS_FOR_QUEUE for tag in service.tags):
         return f"{base_type}Queue"
     return base_type
+
+
+def _gen_styling_attrs(attrs: StylingAttributes) -> str:
+    attrs_dict = {
+        puml_key: repr(getattr(attrs, aisle_key))
+        for aisle_key, puml_key in STYLING_ATTR_MAP.items()
+        if getattr(attrs, aisle_key, None)
+    }
+    return ", ".join(
+        f"${puml_key}={attr_value}"
+        for puml_key, attr_value in attrs_dict.items()
+    )
 
 
 class PlantUMLProjectGenerator(AbstractProjectGenerator):
@@ -255,7 +279,9 @@ class PlantUMLProjectGenerator(AbstractProjectGenerator):
         return (
             f"@startuml\n"
             f"!include <C4/C4_Context>\n"
-            f"{self._cg.gen_context_map()}\n"
+            f"{self._cg.gen_style_map()}\n\n"
+            f"{self._cg.gen_context_map()}\n\n"
+            f"SHOW_LEGEND()\n"
             f"@enduml\n"
         )
 
@@ -264,7 +290,9 @@ class PlantUMLProjectGenerator(AbstractProjectGenerator):
         return (
             f"@startuml\n"
             f"!include <C4/C4_Container>\n"
-            f"{self._cg.gen_container_map()}\n"
+            f"{self._cg.gen_style_map()}\n\n"
+            f"{self._cg.gen_container_map()}\n\n"
+            f"SHOW_LEGEND()\n"
             f"@enduml\n"
         )
 
@@ -273,6 +301,8 @@ class PlantUMLProjectGenerator(AbstractProjectGenerator):
         return (
             f"@startuml\n"
             f"!include <C4/C4_Deployment>\n"
-            f"{self._cg.gen_deployment_map()}\n"
+            f"{self._cg.gen_style_map()}\n\n"
+            f"{self._cg.gen_deployment_map()}\n\n"
+            f"SHOW_LEGEND()\n"
             f"@enduml\n"
         )

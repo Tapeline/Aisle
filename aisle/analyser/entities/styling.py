@@ -9,6 +9,7 @@ class StylingAttributes:
 
     bg: str | None = None
     fg: str | None = None
+    border_color: str | None = None
 
     def __init__(self, **kwargs):
         """Custom init for allowing excessive arguments."""

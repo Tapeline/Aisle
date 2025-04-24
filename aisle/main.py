@@ -8,7 +8,7 @@ import click
 from aisle.analyser.exceptions import AnalyserError
 from aisle.analyser.impl.analyser import Analyser
 from aisle.codegen.impl.mermaid import MermaidProjectGenerator
-from aisle.codegen.impl.plantuml import (
+from aisle.codegen.impl.plantuml.plantuml import (
     PlantUMLProjectGenerator,
 )
 from aisle.lexer.exceptions import LexerError
