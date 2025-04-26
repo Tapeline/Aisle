@@ -19,6 +19,7 @@
         <toc-element topic="Keywords-and-reserved-characters.md"/>
         <toc-element topic="File-structure.md"/>
         <toc-element topic="Links.md"/>
+        <toc-element topic="Tags.md"/>
         <toc-element topic="Context-scope.md"/>
         <toc-element topic="Container-scope.md"/>
         <toc-element topic="Deployment-scope.md"/>
