@@ -3,6 +3,14 @@
   '''
   @startuml
   !include <C4/C4_Container>
+  
+  
+  AddElementTag("Yandex", $backgroundColor='#777700')
+  
+  
+  
+  
+  
   System_Boundary(Blogging_System,"Blogging System"){
       Container(Frontend_Service, "Frontend Service", "UI",$tags="",$techn="Vite+Vue")
       Container(Backend_Service, "Backend Service", "Provides API\nMaybe split into microservices later",$tags="",$techn="Litestar, sqlalchemy")
@@ -26,6 +34,8 @@
   Rel(Backend_Service, Metrics_Service, "Send metrics info on each request","HTTP")
   
   Rel(Backend_Service, DB_Service, "Stores info","")
+  
+  SHOW_LEGEND()
   @enduml
   
   '''
@@ -34,6 +44,14 @@
   '''
   @startuml
   !include <C4/C4_Context>
+  
+  
+  AddElementTag("Yandex", $backgroundColor='#777700')
+  
+  
+  
+  
+  
   Person(User, "User", "Uses blogging app. Reads and creates posts",$tags="")
   
   Person(Admin, "Admin", "Blog moderator",$tags="")
@@ -49,6 +67,8 @@
   Rel(Admin, Metrics_System, "Reviews post metrics","")
   
   Rel(Blogging_System, Metrics_System, "","")
+  
+  SHOW_LEGEND()
   @enduml
   
   '''
@@ -57,6 +77,14 @@
   '''
   @startuml
   !include <C4/C4_Deployment>
+  
+  
+  AddElementTag("Yandex", $backgroundColor='#777700')
+  
+  
+  
+  
+  
   Boundary(VPS_Deployment,"VPS Deployment",$descr="Docker containers with Docker compose"){
       Boundary(Docker_compose,"Docker compose",$descr=""){
           Node(Frontend_Service,"Frontend Service",$descr="Docker container")
@@ -68,6 +96,8 @@
   Boundary(Provided_Metrics,"Provided Metrics",$descr="Metrics Service is already provided"){
       Node(Metrics_Service,"Metrics Service",$descr="Cloud provider")
   }
+  
+  SHOW_LEGEND()
   @enduml
   
   '''
@@ -76,6 +106,8 @@
   '''
   @startuml
   !include <C4/C4_Context>
+  
+  
   Person(User, "User", "",$tags="")
   
   System(System, "System", "",$tags="")
@@ -87,6 +119,8 @@
   BiRel(System, User, "","")
   
   BiRel(System, User, "","")
+  
+  SHOW_LEGEND()
   @enduml
   
   '''
@@ -95,9 +129,13 @@
   '''
   @startuml
   !include <C4/C4_Context>
+  
+  
   Person(Plus_c7da77da, "Plus+", "",$tags="")
   
   System(Plus, "Plus", "",$tags="")
+  
+  SHOW_LEGEND()
   @enduml
   
   '''

@@ -1,6 +1,6 @@
 from aisle.analyser.entities.project import Project
 from aisle.codegen import utils
-from aisle.codegen.impl import plantuml
+from aisle.codegen.impl.plantuml import plantuml
 from aisle.codegen.interfaces import AbstractProjectGenerator
 
 

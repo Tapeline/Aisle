@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from aisle.analyser.impl.analyser import Analyser
-from aisle.codegen.impl.plantuml import PlantUMLProjectGenerator
+from aisle.codegen.impl.plantuml.plantuml import PlantUMLProjectGenerator
 from aisle.codegen.interfaces import AbstractProjectGenerator
 from aisle.lexer.impl.lexer import Lexer
 from aisle.parser.impl.parser import Parser
