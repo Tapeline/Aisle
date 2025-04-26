@@ -2,7 +2,7 @@ import pytest
 
 from aisle.analyser.entities.containers import ServiceEntity
 from aisle.analyser.entities.context import SystemEntity
-from aisle.codegen.impl.plantuml.plantuml import _get_node_type
+from aisle.codegen.impl.plantuml.text_compile import get_node_type
 
 
 @pytest.mark.parametrize(
@@ -51,5 +51,6 @@ from aisle.codegen.impl.plantuml.plantuml import _get_node_type
     ]
 )
 def test_node_type_generation(entity, base, expected):
-    node_t = _get_node_type(base, entity)
+    """Test that node types generated as expected."""
+    node_t = get_node_type(base, entity)
     assert node_t == base + expected

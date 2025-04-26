@@ -32,6 +32,6 @@ class ScopeNode(Node):
         self.scope_type = scope_type
         self.scope_name = scope_name
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Convert to string repr."""
         return f"Scope({self.scope_type.value}: {self.scope_name})"

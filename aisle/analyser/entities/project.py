@@ -41,7 +41,7 @@ class Namespace:
             raise NameNotFoundError(key)
         return self._ns[key]
 
-    def values(self) -> Collection[ProjectEntity]:
+    def values(self) -> Collection[ProjectEntity]:  # noqa: WPS110
         """Like dict::values."""
         return self._ns.values()
 

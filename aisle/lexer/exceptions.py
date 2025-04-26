@@ -22,7 +22,7 @@ class LexerError(AisleError):
             f"{line_str}"
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Convert to string repr."""
         return self.formatted_message
 

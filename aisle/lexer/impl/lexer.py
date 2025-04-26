@@ -1,9 +1,11 @@
 """Contains lexer implementation."""
 
 from collections.abc import Sequence
+from typing import Any
 
 from aisle.lexer.exceptions import (
     IncompleteUnicodeQuadError,
+    LexerError,
     StringNotClosedError,
     UnexpectedCharacterError,
 )
@@ -82,13 +84,19 @@ class Lexer(AbstractLexer):
             return pattern
         return None
 
-    def _error(self, exc_type, *args, **kwargs) -> None:
+    def _error(
+            self,
+            exc_type: type[LexerError],
+            *args: Any,
+            **kwargs: Any
+    ) -> None:
         """Raise exception at current position."""
         raise exc_type(
             *args,
-            **kwargs,
-            source=self._src,
-            line=self._line,
+            **kwargs | {
+                "source": self._src,
+                "line": self._line,
+            },
         )
 
     def scan(self) -> Sequence[Token]:

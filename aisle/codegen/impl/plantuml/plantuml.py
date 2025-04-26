@@ -1,18 +1,16 @@
-import hashlib
-import string
-from types import MappingProxyType
-from typing import Final
-
 from aisle.analyser.entities.containers import ServiceEntity
 from aisle.analyser.entities.context import ActorEntity, SystemEntity
 from aisle.analyser.entities.deployment import DeploymentEntity
 from aisle.analyser.entities.links import Link
 from aisle.analyser.entities.project import Project, ProjectEntity
-from aisle.analyser.entities.styling import LegendStyling, StylingAttributes
+from aisle.analyser.entities.styling import LegendStyling
 from aisle.codegen import utils
-from aisle.codegen.impl.plantuml.constants import (
-    ALLOWED_CHARS,
-    STYLING_ATTR_MAP, TAGS_FOR_DB, TAGS_FOR_QUEUE,
+from aisle.codegen.impl.plantuml.text_compile import (
+    compile_tags,
+    gen_styling_attrs,
+    get_node_type,
+    safe_name,
+    safe_str,
 )
 from aisle.codegen.interfaces import AbstractProjectGenerator
 from aisle.parser.nodes.legend import LegendSelectorType
@@ -29,7 +27,7 @@ class SafeNameStorage:
     def __getitem__(self, unsafe_name: str) -> str:
         """Get safe name or generate if not present."""
         if unsafe_name not in self._names:
-            self._names[unsafe_name] = _safe_name(unsafe_name)
+            self._names[unsafe_name] = safe_name(unsafe_name)
         return self._names[unsafe_name]
 
 
@@ -44,12 +42,12 @@ class CodeGenerator:
     def gen_actor(self, actor: ActorEntity) -> str:
         """Generate actor code."""
         safe_name = self._safe_names[actor.name]
-        tags = _compile_tags(actor.tags)
+        tags = compile_tags(actor.tags)
         return (
             f'Person('
             f'{safe_name}, '
-            f'"{_safe_str(actor.name)}", '
-            f'"{_safe_str(actor.description)}",'
+            f'"{safe_str(actor.name)}", '
+            f'"{safe_str(actor.description)}",'
             f'$tags="{tags}"'
             f')'
         )
@@ -57,14 +55,14 @@ class CodeGenerator:
     def gen_system(self, system: SystemEntity) -> str:
         """Generate system code."""
         safe_name = self._safe_names[system.name]
-        tags = _compile_tags(system.tags)
-        node_type = _get_node_type("System", system)
+        tags = compile_tags(system.tags)
+        node_type = get_node_type("System", system)
         suffix = "_Ext" if system.is_external else ""
         return (
             f'{node_type}{suffix}('
             f'{safe_name}, '
-            f'"{_safe_str(system.name)}", '
-            f'"{_safe_str(system.description)}",'
+            f'"{safe_str(system.name)}", '
+            f'"{safe_str(system.description)}",'
             f'$tags="{tags}"'
             f')'
         )
@@ -72,14 +70,14 @@ class CodeGenerator:
     def gen_service(self, service: ServiceEntity) -> str:
         """Generate service (container) code."""
         safe_name = self._safe_names[service.name]
-        tags = _compile_tags(service.tags)
-        node_type = _get_node_type("Container", service)
+        tags = compile_tags(service.tags)
+        node_type = get_node_type("Container", service)
         suffix = "_Ext" if service.is_external else ""
         return (
             f'{node_type}{suffix}('
             f'{safe_name}, '
-            f'"{_safe_str(service.name)}", '
-            f'"{_safe_str(service.description)}",'
+            f'"{safe_str(service.name)}", '
+            f'"{safe_str(service.description)}",'
             f'$tags="{tags}",'
             f'$techn="{service.tech}"'
             f')'
@@ -93,14 +91,14 @@ class CodeGenerator:
         boundary = (
             f'System_Boundary('
             f'{safe_name},'
-            f'"{_safe_str(system.name)}"'
+            f'"{safe_str(system.name)}"'
             f')'
         )
         return (
-                boundary +
-                "{\n" +
-                utils.indent(service_gen, 4) +
-                "\n}"
+            boundary +
+            "{\n" +
+            utils.indent(service_gen, 4) +
+            "\n}"
         )
 
     def gen_link(self, link_from: ProjectEntity, link: Link) -> str:
@@ -113,8 +111,8 @@ class CodeGenerator:
                 f'Rel('
                 f'{safe_name_a}, '
                 f'{safe_name_b}, '
-                f'"{_safe_str(link.description)}",'
-                f'"{_safe_str(link.over)}"'
+                f'"{safe_str(link.description)}",'
+                f'"{safe_str(link.over)}"'
                 f')'
             )
         if link.type == LinkType.INCOMING:
@@ -122,8 +120,8 @@ class CodeGenerator:
                 f'Rel('
                 f'{safe_name_b}, '
                 f'{safe_name_a}, '
-                f'"{_safe_str(link.description)}",'
-                f'"{_safe_str(link.over)}"'
+                f'"{safe_str(link.description)}",'
+                f'"{safe_str(link.over)}"'
                 f')'
             )
         if link.type in {LinkType.BIDIRECTIONAL, LinkType.NON_DIRECTED}:
@@ -131,8 +129,8 @@ class CodeGenerator:
                 f'BiRel('
                 f'{safe_name_b}, '
                 f'{safe_name_a}, '
-                f'"{_safe_str(link.description)}",'
-                f'"{_safe_str(link.over)}"'
+                f'"{safe_str(link.description)}",'
+                f'"{safe_str(link.over)}"'
                 f')'
             )
         return link_str
@@ -145,19 +143,19 @@ class CodeGenerator:
             code.append(
                 f'Node('
                 f'{self._safe_names[svc_deployment.service_name]},'
-                f'"{_safe_str(svc_deployment.service_name)}",'
-                f'$descr="{_safe_str(svc_deployment.deploy_as)}"'
+                f'"{safe_str(svc_deployment.service_name)}",'
+                f'$descr="{safe_str(svc_deployment.deploy_as)}"'
                 f')'
             )
         return (
-                f'Boundary('
-                f'{self._safe_names[deployment.name]},'
-                f'"{_safe_str(deployment.name)}",'
-                f'$descr="{_safe_str(deployment.description)}"'
-                f')' +
-                "{\n" +
-                utils.indent("\n".join(code), 4) +
-                "\n}"
+            f'Boundary('
+            f'{self._safe_names[deployment.name]},'
+            f'"{safe_str(deployment.name)}",'
+            f'$descr="{safe_str(deployment.description)}"'
+            f')' +
+            "{\n" +
+            utils.indent("\n".join(code), 4) +
+            "\n}"
         )
 
     def gen_context_map(self) -> str:  # noqa: WPS210
@@ -214,54 +212,9 @@ class CodeGenerator:
         return (
             f"AddElementTag("
             f'"{style.selector.selector}", '
-            f'{_gen_styling_attrs(style.attrs)}'
+            f'{gen_styling_attrs(style.attrs)}'
             f')'
         )
-
-
-def _safe_name(name: str) -> str:
-    """Ensure name is safe to use as identifier."""
-    name = name.replace(" ", "_")
-    filtered_name = "".join(char for char in name if char in ALLOWED_CHARS)
-    hash_part = hashlib.md5(name.encode()).hexdigest()[:8]
-    if filtered_name == name:
-        return filtered_name
-    return f"{filtered_name}_{hash_part}"
-
-
-def _compile_tags(tags: list[str]) -> str:
-    """Join all tags with +."""
-    return "+".join(map(_safe_name, tags))
-
-
-def _safe_str(text: str | None) -> str:
-    r"""Get rid of unsafe string chars like " or \n."""
-    if text is None:
-        return ""
-    return text.replace('"', r'\"').replace("\n", r"\n")
-
-
-def _get_node_type(
-        base_type: str,
-        service: ServiceEntity | SystemEntity
-) -> str:
-    if any(tag in TAGS_FOR_DB for tag in service.tags):
-        return f"{base_type}Db"
-    if any(tag in TAGS_FOR_QUEUE for tag in service.tags):
-        return f"{base_type}Queue"
-    return base_type
-
-
-def _gen_styling_attrs(attrs: StylingAttributes) -> str:
-    attrs_dict = {
-        puml_key: repr(getattr(attrs, aisle_key))
-        for aisle_key, puml_key in STYLING_ATTR_MAP.items()
-        if getattr(attrs, aisle_key, None)
-    }
-    return ", ".join(
-        f"${puml_key}={attr_value}"
-        for puml_key, attr_value in attrs_dict.items()
-    )
 
 
 class PlantUMLProjectGenerator(AbstractProjectGenerator):

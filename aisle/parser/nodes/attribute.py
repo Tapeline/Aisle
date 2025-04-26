@@ -23,6 +23,6 @@ class AttrNode(Node):
         self.name = name
         self.value = value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Convert to string repr."""
         return f"Attr({self.name} = {self.value})"

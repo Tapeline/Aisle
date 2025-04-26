@@ -1,3 +1,5 @@
+from typing import Any
+
 from aisle.exceptions import AisleError
 from aisle.parser.nodes.base import Node
 
@@ -5,7 +7,9 @@ from aisle.parser.nodes.base import Node
 class VisitMethodNotFoundError(AttributeError):
     """Raised when tried to visit node, but did not find a suitable method."""
 
-    def __init__(self, class_name: str, target_object):  # pragma: no cover
+    def __init__(  # pragma: no cover
+            self, class_name: str, target_object: Any
+    ) -> None:
         """Create exception."""
         super().__init__(
             obj=target_object,
@@ -23,15 +27,15 @@ class AnalyserError(AisleError):
             self,
             node: Node,
             message: str | None = None,
-            **params,  # noqa: WPS110
-    ):
+            **params: Any,  # noqa: WPS110
+    ) -> None:
         """Create analyser exception and format message."""
         self.node = node
         self.message = message or self.default_message
         for param_k, param_v in params.items():
             setattr(self, param_k, param_v)
 
-    def formatted_message(self, source_code: str):
+    def formatted_message(self, source_code: str) -> str:
         """Get beautiful message."""
         lines = source_code.splitlines()
         formatted = self.message.format(node=self.node)

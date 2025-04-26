@@ -24,7 +24,7 @@ _GENERATOR_NAMES = tuple(map(str, _GENERATORS.keys()))
 
 
 @click.group()
-def aisle():
+def aisle() -> None:
     """Aisle command line tool."""
 
 
@@ -45,7 +45,7 @@ def aisle():
     help="output code format"
 )
 @click.argument("file")
-def generate(directory, encoding, file, fmt):
+def generate(directory, encoding, file, fmt) -> None:  # type: ignore
     """Generate PlantUML diagrams from Aisle file."""
     src = Path(file).read_text(encoding=encoding)
     if fmt not in _GENERATORS:
@@ -78,7 +78,9 @@ def _print_error_and_exit(text: str) -> None:
     raise click.exceptions.Exit(1)
 
 
-def _generate_and_write(directory, encoding, generator):
+def _generate_and_write(  # type: ignore
+        directory, encoding, generator
+) -> None:
     Path(directory).mkdir(parents=True, exist_ok=True)
     Path(
         directory,
@@ -103,7 +105,7 @@ def _generate_and_write(directory, encoding, generator):
     )
 
 
-def main():
+def main() -> None:
     """Entrypoint."""
     aisle()
 

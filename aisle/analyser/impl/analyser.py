@@ -34,7 +34,7 @@ from aisle.parser.nodes.text import TextNode
 
 
 class _AnalyserBase:
-    def _visit(self, node: Node):
+    def _visit(self, node: Node) -> None:
         class_name = node.__class__.__name__
         self._pre_visit(node)
         try:
@@ -42,7 +42,7 @@ class _AnalyserBase:
         except AttributeError as error:  # pragma: no cover
             raise VisitMethodNotFoundError(class_name, self) from error
 
-    def _pre_visit(self, node: Node):
+    def _pre_visit(self, node: Node) -> None:
         ...  # pragma: no cover
 
 
@@ -54,11 +54,13 @@ class Scope:
     name: str
 
 
-_ALLOWED_ENTITY_TYPES = MappingProxyType({
-    ScopeType.CONTEXT: {EntityType.ACTOR, EntityType.SYSTEM},
-    ScopeType.CONTAINERS: {EntityType.SERVICE},
-    ScopeType.DEPLOYMENT: {EntityType.DEPLOYMENT},
-})
+_ALLOWED_ENTITY_TYPES = MappingProxyType(
+    {
+        ScopeType.CONTEXT: {EntityType.ACTOR, EntityType.SYSTEM},
+        ScopeType.CONTAINERS: {EntityType.SERVICE},
+        ScopeType.DEPLOYMENT: {EntityType.DEPLOYMENT},
+    }
+)
 
 
 class Analyser(AbstractAnalyser, _AnalyserBase):
@@ -81,11 +83,11 @@ class Analyser(AbstractAnalyser, _AnalyserBase):
             )
         return self.project
 
-    def _pre_visit(self, node: Node):
+    def _pre_visit(self, node: Node) -> None:
         if self.project is None and not isinstance(node, ProjectDefNode):
             raise NoProjectDefinedError(node)
 
-    def _visit_ProjectDefNode(self, node: ProjectDefNode):
+    def _visit_ProjectDefNode(self, node: ProjectDefNode) -> None:
         if self.project is not None:
             raise DuplicateProjectDefinitionError(node)
         description = "\n".join(node.description)
@@ -97,7 +99,7 @@ class Analyser(AbstractAnalyser, _AnalyserBase):
             comments=[]
         )
 
-    def _visit_ScopeNode(self, node: ScopeNode):
+    def _visit_ScopeNode(self, node: ScopeNode) -> None:
         if self.project.name != node.scope_name:
             raise UnmatchedProjectAndScopeNameError(
                 node,
@@ -109,7 +111,7 @@ class Analyser(AbstractAnalyser, _AnalyserBase):
     def _ensure_entity_applicable(  # pragma: no cover
             self,
             entity: EntityNode
-    ):
+    ) -> None:
         if self.scope is None:
             raise UnmatchedScopeAndEntityTypeError(
                 entity,
@@ -123,7 +125,7 @@ class Analyser(AbstractAnalyser, _AnalyserBase):
                 entity_type=entity.type.value
             )
 
-    def _visit_EntityNode(self, node: EntityNode):
+    def _visit_EntityNode(self, node: EntityNode) -> None:
         self._ensure_entity_applicable(node)
         match node.type:
             case EntityType.ACTOR:
@@ -179,17 +181,19 @@ class Analyser(AbstractAnalyser, _AnalyserBase):
             ):
                 continue
             i_desc, i_svc, i_inner = self._evaluate_deployment_body(node.body)
-            inner_deployments.append(DeploymentEntity(
-                name=node.name,
-                description=i_desc,
-                tags=list(node.tags),
-                is_external=node.is_external,
-                deploys=i_svc,
-                inner_entities=i_inner
-            ))
+            inner_deployments.append(
+                DeploymentEntity(
+                    name=node.name,
+                    description=i_desc,
+                    tags=list(node.tags),
+                    is_external=node.is_external,
+                    deploys=i_svc,
+                    inner_entities=i_inner
+                )
+            )
         return description, svc_deployments, inner_deployments
 
-    def _create_actor(self, node: EntityNode):
+    def _create_actor(self, node: EntityNode) -> None:
         description, links, _ = self._evaluate_entity_body(node.body)
         entity = ActorEntity(
             name=node.name,
@@ -199,7 +203,7 @@ class Analyser(AbstractAnalyser, _AnalyserBase):
         )
         self.project.namespace[entity.name] = entity
 
-    def _create_system(self, node: EntityNode):
+    def _create_system(self, node: EntityNode) -> None:
         description, links, _ = self._evaluate_entity_body(node.body)
         entity = SystemEntity(
             name=node.name,
@@ -210,7 +214,7 @@ class Analyser(AbstractAnalyser, _AnalyserBase):
         )
         self.project.namespace[entity.name] = entity
 
-    def _create_service(self, node: EntityNode):
+    def _create_service(self, node: EntityNode) -> None:
         description, links, attrs = self._evaluate_entity_body(node.body)
         entity = ServiceEntity(
             name=node.name,
@@ -223,7 +227,7 @@ class Analyser(AbstractAnalyser, _AnalyserBase):
         )
         self.project.namespace[entity.name] = entity
 
-    def _create_deployment(self, node: EntityNode):
+    def _create_deployment(self, node: EntityNode) -> None:
         description, svc_deploys, inner_entities = (
             self._evaluate_deployment_body(node.body)
         )
@@ -237,10 +241,13 @@ class Analyser(AbstractAnalyser, _AnalyserBase):
         )
         self.project.namespace[entity.name] = entity
 
-    def _visit_TextNode(self, node: TextNode):
+    def _visit_TextNode(self, node: TextNode) -> None:
         self.project.comments.append(node.text)
 
-    def _visit_LegendDeclarationNode(self, node: LegendDeclarationNode):
+    def _visit_LegendDeclarationNode(
+            self,
+            node: LegendDeclarationNode
+    ) -> None:
         description, _, attrs = self._evaluate_entity_body(node.body)
         style = LegendStyling(
             selector=node.selector,

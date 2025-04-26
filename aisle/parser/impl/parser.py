@@ -2,9 +2,11 @@
 
 from collections.abc import Callable, Sequence
 from types import MappingProxyType
+from typing import Any
 
 from aisle.lexer.tokens import Token, TokenType
 from aisle.parser.exceptions import (
+    ParserError,
     UnexpectedEndError,
     UnexpectedKeywordTokenError,
     UnexpectedTokenError,
@@ -27,12 +29,14 @@ from aisle.parser.nodes.links import LinkCollectionNode, LinkNode, LinkType
 from aisle.parser.nodes.scope import ScopeNode, ScopeType
 from aisle.parser.nodes.text import TextNode
 
-LINK_TOKEN_TO_TYPE = MappingProxyType({
-    TokenType.ARROW_L: LinkType.INCOMING,
-    TokenType.ARROW_R: LinkType.OUTGOING,
-    TokenType.ARROW_BI_DIR: LinkType.BIDIRECTIONAL,
-    TokenType.ARROW_NO_DIR: LinkType.NON_DIRECTED,
-})
+LINK_TOKEN_TO_TYPE = MappingProxyType(
+    {
+        TokenType.ARROW_L: LinkType.INCOMING,
+        TokenType.ARROW_R: LinkType.OUTGOING,
+        TokenType.ARROW_BI_DIR: LinkType.BIDIRECTIONAL,
+        TokenType.ARROW_NO_DIR: LinkType.NON_DIRECTED,
+    }
+)
 
 
 class Parser(AbstractParser):
@@ -88,13 +92,21 @@ class Parser(AbstractParser):
             return self._next()
         return None
 
-    def _error(self, exc_type, *args, **kwargs):
+    def _error(
+            self,
+            exc_type: type[ParserError],
+            *args: Any,
+            **kwargs: Any
+    ) -> None:
         """Raise an exception at current position."""
         raise exc_type(
             *args,
-            **kwargs,
-            source=self._src,
-            line=self._tokens[min(len(self._tokens) - 1, self._i)].line,
+            **kwargs | {
+                "source": self._src,
+                "line": self._tokens[
+                    min(len(self._tokens) - 1, self._i)
+                ].line,
+            },
         )
 
     def _require(
@@ -559,13 +571,15 @@ class Parser(AbstractParser):
             tags = self._parse_tags()
             if desc_token:
                 if self._match(TokenType.COLON):
-                    nodes.append(EntityNode(
-                        self._previous.line,
-                        EntityType.DEPLOYMENT,
-                        desc_token.lexeme,
-                        tags,
-                        self._parse_deployment_body(indent_lvl + 1)
-                    ))
+                    nodes.append(
+                        EntityNode(
+                            self._previous.line,
+                            EntityType.DEPLOYMENT,
+                            desc_token.lexeme,
+                            tags,
+                            self._parse_deployment_body(indent_lvl + 1)
+                        )
+                    )
                 else:
                     nodes.append(TextNode(desc_token.line, desc_token.lexeme))
                 continue

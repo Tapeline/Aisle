@@ -46,7 +46,7 @@ class LinkNode(Node):
         self.over = link_over
         self.description = link_description
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Convert to string repr."""
         return (
             f"Link({self.type.value} {self.to} "
@@ -71,6 +71,6 @@ class LinkCollectionNode(Node):
         super().__init__(line)
         self.links = links
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Convert to string repr."""
         return f"Links[{'; '.join(map(str, self.links))}]"

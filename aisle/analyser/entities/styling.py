@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 from aisle.parser.nodes.legend import LegendSelector
 
@@ -11,7 +12,7 @@ class StylingAttributes:
     fg: str | None = None
     border_color: str | None = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """Custom init for allowing excessive arguments."""
         for kw_k, kw_v in kwargs.items():
             setattr(self, kw_k, kw_v)

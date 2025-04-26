@@ -16,7 +16,7 @@ class LegendSelectorType(Enum):
     MATCHES_REGEX = "="
     ENTITY_TYPE = "entity"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Get code repr of that enum."""
         return f"LegendSelectorType.{self.name}"
 
@@ -50,6 +50,6 @@ class LegendDeclarationNode(Node):
         self.selector = selector
         self.body = body
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Convert to string repr."""
         return f"Legend({self.selector}: {'; '.join(map(str, self.body))})"

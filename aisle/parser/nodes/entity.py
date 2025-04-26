@@ -39,7 +39,7 @@ class EntityNode(Node):
             body: Sequence[Node],
             *,
             is_external: bool = False,
-    ):
+    ) -> None:
         """Create node."""
         super().__init__(line)
         self.type = entity_type
@@ -48,7 +48,7 @@ class EntityNode(Node):
         self.tags = tags
         self.is_external = is_external
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Convert to string repr."""
         ext = "external " if self.is_external else ""
         return (
@@ -72,13 +72,13 @@ class ProjectDefNode(Node):
             line: int,
             name: str,
             description: Sequence[str],
-    ):
+    ) -> None:
         """Create node."""
         super().__init__(line)
         self.name = name
         self.description = description
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Convert to string repr."""
         return f"Project({self.name}: {self.description})"
 
@@ -97,12 +97,12 @@ class DeployNode(Node):
             line: int,
             target: str,
             deploy_as: str | None,
-    ):
+    ) -> None:
         """Create node."""
         super().__init__(line)
         self.target = target
         self.deploy_as = deploy_as
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Convert to string repr."""
         return f"Deploy({self.target} {self.deploy_as})"

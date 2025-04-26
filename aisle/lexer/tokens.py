@@ -32,12 +32,12 @@ class Token:
     lexeme: str
     line: int
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Convert to string repr."""
         return f"{self.type.name}{self.lexeme}"
 
     @property
-    def human_readable_repr(self):
+    def human_readable_repr(self) -> str:
         """Get beautiful version of __repr__."""
         return f"{self.line}\t| {self.type.name: <10}    {self.lexeme}"
 
