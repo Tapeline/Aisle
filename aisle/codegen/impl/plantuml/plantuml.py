@@ -1,3 +1,5 @@
+from typing import Mapping
+
 from aisle.analyser.entities.containers import ServiceEntity
 from aisle.analyser.entities.context import ActorEntity, SystemEntity
 from aisle.analyser.entities.deployment import DeploymentEntity
@@ -12,7 +14,7 @@ from aisle.codegen.impl.plantuml.text_compile import (
     safe_name,
     safe_str,
 )
-from aisle.codegen.interfaces import AbstractProjectGenerator
+from aisle.codegen.interfaces import AbstractProjectGenerator, FileGenerator
 from aisle.parser.nodes.legend import LegendSelectorType
 from aisle.parser.nodes.links import LinkType
 
@@ -226,6 +228,14 @@ class PlantUMLProjectGenerator(AbstractProjectGenerator):
         """Create generator."""
         self.project = project
         self._cg = CodeGenerator(project)
+
+    @property
+    def file_generators(self) -> Mapping[str, FileGenerator]:
+        return {
+            "context": self.generate_context,
+            "containers": self.generate_containers,
+            "deployments": self.generate_deployments
+        }
 
     def generate_context(self) -> str:
         """Generate context code."""

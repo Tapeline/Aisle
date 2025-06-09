@@ -1,7 +1,9 @@
+from typing import Mapping
+
 from aisle.analyser.entities.project import Project
 from aisle.codegen import utils
 from aisle.codegen.impl.plantuml import plantuml
-from aisle.codegen.interfaces import AbstractProjectGenerator
+from aisle.codegen.interfaces import AbstractProjectGenerator, FileGenerator
 
 
 class MermaidProjectGenerator(AbstractProjectGenerator):
@@ -13,6 +15,14 @@ class MermaidProjectGenerator(AbstractProjectGenerator):
         """Create generator."""
         self.project = project
         self._plantuml = plantuml.CodeGenerator(project)
+
+    @property
+    def file_generators(self) -> Mapping[str, FileGenerator]:
+        return {
+            "context": self.generate_context,
+            "containers": self.generate_containers,
+            "deployments": self.generate_deployments
+        }
 
     def generate_context(self) -> str:
         """Generate context code."""

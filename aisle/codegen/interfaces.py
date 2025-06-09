@@ -1,6 +1,10 @@
 from abc import ABC, abstractmethod
+from typing import Callable, Mapping
 
 from aisle.analyser.entities.project import Project
+
+
+type FileGenerator = Callable[[], str]
 
 
 class AbstractProjectGenerator(ABC):
@@ -12,14 +16,7 @@ class AbstractProjectGenerator(ABC):
     def __init__(self, project: Project) -> None:
         """Create project generator."""
 
+    @property
     @abstractmethod
-    def generate_context(self) -> str:
-        """Generate context code."""
-
-    @abstractmethod
-    def generate_containers(self) -> str:
-        """Generate containers code."""
-
-    @abstractmethod
-    def generate_deployments(self) -> str:
-        """Generate deployments code."""
+    def file_generators(self) -> Mapping[str, FileGenerator]:
+        """Get generators"""

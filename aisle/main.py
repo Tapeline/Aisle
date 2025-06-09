@@ -1,5 +1,5 @@
 """Main file."""
-
+from os import PathLike
 from pathlib import Path
 from types import MappingProxyType
 
@@ -7,10 +7,12 @@ import click
 
 from aisle.analyser.exceptions import AnalyserError
 from aisle.analyser.impl.analyser import Analyser
+from aisle.codegen.impl.d2.d2 import D2ProjectGenerator
 from aisle.codegen.impl.mermaid import MermaidProjectGenerator
 from aisle.codegen.impl.plantuml.plantuml import (
     PlantUMLProjectGenerator,
 )
+from aisle.codegen.interfaces import AbstractProjectGenerator
 from aisle.lexer.exceptions import LexerError
 from aisle.lexer.impl.lexer import Lexer
 from aisle.parser.exceptions import ParserError
@@ -19,6 +21,7 @@ from aisle.parser.impl.parser import Parser
 _GENERATORS = MappingProxyType({
     "plantuml": PlantUMLProjectGenerator,
     "mermaid": MermaidProjectGenerator,
+    "d2": D2ProjectGenerator
 })
 _GENERATOR_NAMES = tuple(map(str, _GENERATORS.keys()))
 
@@ -78,31 +81,20 @@ def _print_error_and_exit(text: str) -> None:
     raise click.exceptions.Exit(1)
 
 
-def _generate_and_write(  # type: ignore
-        directory, encoding, generator
+def _generate_and_write(
+        directory: PathLike,
+        encoding: str | None,
+        generator: AbstractProjectGenerator
 ) -> None:
     Path(directory).mkdir(parents=True, exist_ok=True)
-    Path(
-        directory,
-        f"context.{generator.file_extension}"
-    ).write_text(
-        generator.generate_context(),
-        encoding=encoding
-    )
-    Path(
-        directory,
-        f"containers.{generator.file_extension}"
-    ).write_text(
-        generator.generate_containers(),
-        encoding=encoding
-    )
-    Path(
-        directory,
-        f"deployment.{generator.file_extension}"
-    ).write_text(
-        generator.generate_deployments(),
-        encoding=encoding
-    )
+    for file_name, gen_func in generator.file_generators.items():
+        Path(
+            directory,
+            f"{file_name}.{generator.file_extension}"
+        ).write_text(
+            gen_func(),
+            encoding=encoding
+        )
 
 
 def main() -> None:

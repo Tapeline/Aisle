@@ -29,7 +29,7 @@ def test_cli_plantuml(snapshot):  # noqa: WPS210
     assert process.returncode == 0, (stdout, stderr)
     context = Path("./tests/__gen__/context.puml").read_text()
     containers = Path("./tests/__gen__/containers.puml").read_text()
-    deployments = Path("./tests/__gen__/deployment.puml").read_text()
+    deployments = Path("./tests/__gen__/deployments.puml").read_text()
     shutil.rmtree("./tests/__gen__")
     assert context + containers + deployments == snapshot
     assert not stderr
@@ -46,7 +46,7 @@ def test_cli_mermaid(snapshot):  # noqa: WPS210
     assert process.returncode == 0, (stdout, stderr)
     context = Path("./tests/__gen__/context.txt").read_text()
     containers = Path("./tests/__gen__/containers.txt").read_text()
-    deployments = Path("./tests/__gen__/deployment.txt").read_text()
+    deployments = Path("./tests/__gen__/deployments.txt").read_text()
     shutil.rmtree("./tests/__gen__")
     assert context + containers + deployments == snapshot
     assert not stderr

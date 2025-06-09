@@ -173,7 +173,7 @@
 # ---
 # name: test_cli_wrong_format
   '''
-  [31mwrongfmt not found! Available formats: ('plantuml', 'mermaid')[0m
+  [31mwrongfmt not found! Available formats: ('plantuml', 'mermaid', 'd2')[0m
   
   '''
 # ---
