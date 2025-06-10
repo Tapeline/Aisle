@@ -45,6 +45,9 @@ class _CodeGenerator:
         strings.append(self._gen_links())
         return "\n\n".join(strings)
 
+    def get_deployment_map(self) -> str:
+        return "\n\n".join(self._gen_deployments())
+
     def _gen_system(self, system: SystemEntity) -> str:
         sys_name = self._safe_names[system.name]
         sys_desc = textwrap.indent(system.description, "  ")
@@ -132,6 +135,50 @@ class _CodeGenerator:
                 ]
         return "\n".join(links)
 
+    def _gen_deployments(self) -> list[str]:
+        return [
+            "\n\n".join(
+                _gen_deployment_rec(self._safe_names, [], deployment)
+            )
+            for deployment in self.project.get_deployments()
+        ]
+
+
+def _gen_deployment_rec(
+        safe_names: _D2SafeNameStorage,
+        prefix: list[str],
+        deployment: DeploymentEntity
+) -> list[str]:
+    dep_name = safe_names[deployment.name]
+    dep_desc = textwrap.indent(deployment.description, "  ")
+    short_desc = textwrap.indent(_gen_short_desc(deployment), "  ")
+    qualname = ".".join(prefix + [dep_name])
+    dep_code = (
+        f"{qualname}: |md\n"
+        f"  ## {deployment.name}\n"
+        f"{short_desc}\n\n"
+        f"{dep_desc}\n"
+        "| {\n"
+        "  shape: rectangle\n"
+        "  label.near: bottom-left\n"
+        "}\n"
+    )
+    deployments = [dep_code]
+    for service in deployment.deploys:
+        deployments.append(
+            f"{qualname}.{safe_names[service.service_name]}: |md\n"
+            f"  ### {service.service_name}\n"
+            f"  deploy as {service.deploy_as}\n"
+            "| {\n"
+            "  shape: rectangle\n"
+            "}\n"
+        )
+    for sub_dep in deployment.inner_entities:
+        deployments.extend(
+            _gen_deployment_rec(safe_names, prefix + [dep_name], sub_dep)
+        )
+    return deployments
+
 
 def _gen_short_desc(
         entity: SystemEntity | ServiceEntity | ActorEntity | DeploymentEntity
@@ -183,8 +230,15 @@ class D2ProjectGenerator(AbstractProjectGenerator):
 
     @property
     def file_generators(self) -> Mapping[str, FileGenerator]:
-        return {"diagram": self.generate}
+        return {
+            "main": self.generate_main,
+            "deployments": self.generate_deployments
+        }
 
-    def generate(self) -> str:
+    def generate_main(self) -> str:
         """Generate code."""
         return self._cg.get_main_map()
+
+    def generate_deployments(self) -> str:
+        """Generate code for deployments."""
+        return self._cg.get_deployment_map()
