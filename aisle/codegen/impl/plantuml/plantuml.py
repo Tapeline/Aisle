@@ -1,4 +1,4 @@
-from typing import Mapping
+from collections.abc import Mapping
 
 from aisle.analyser.entities.containers import ServiceEntity
 from aisle.analyser.entities.context import ActorEntity, SystemEntity
@@ -231,6 +231,7 @@ class PlantUMLProjectGenerator(AbstractProjectGenerator):
 
     @property
     def file_generators(self) -> Mapping[str, FileGenerator]:
+        """Get generators."""
         return {
             "context": self.generate_context,
             "containers": self.generate_containers,

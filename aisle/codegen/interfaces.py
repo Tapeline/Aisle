@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Callable, Mapping
+from collections.abc import Mapping
+from typing import Callable
 
 from aisle.analyser.entities.project import Project
-
 
 type FileGenerator = Callable[[], str]
 
@@ -19,4 +19,4 @@ class AbstractProjectGenerator(ABC):
     @property
     @abstractmethod
     def file_generators(self) -> Mapping[str, FileGenerator]:
-        """Get generators"""
+        """Get generators."""

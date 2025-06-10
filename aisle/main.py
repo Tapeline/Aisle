@@ -62,7 +62,7 @@ def generate(directory, encoding, file, fmt) -> None:  # type: ignore
         nodes = parser.parse()
         analyser = Analyser(nodes)
         project = analyser.analyse()
-        generator = _GENERATORS[fmt](project)
+        generator = _GENERATORS[fmt](project)  # type: ignore
         directory = directory or project.name
         _generate_and_write(directory, encoding, generator)
         click.echo("Generated")
@@ -82,7 +82,7 @@ def _print_error_and_exit(text: str) -> None:
 
 
 def _generate_and_write(
-        directory: PathLike,
+        directory: PathLike[str],
         encoding: str | None,
         generator: AbstractProjectGenerator
 ) -> None:

@@ -1,5 +1,6 @@
 import textwrap
-from typing import Mapping, assert_never
+from collections.abc import Mapping
+from typing import assert_never
 
 from aisle.analyser.entities.containers import ServiceEntity
 from aisle.analyser.entities.context import ActorEntity, SystemEntity
@@ -8,7 +9,7 @@ from aisle.analyser.entities.links import Link
 from aisle.analyser.entities.project import Project
 from aisle.codegen.impl.d2.text_utils import safe_name
 from aisle.codegen.interfaces import AbstractProjectGenerator, FileGenerator
-from aisle.parser.nodes.links import LinkNode, LinkType
+from aisle.parser.nodes.links import LinkType
 
 
 class _D2SafeNameStorage:
@@ -37,11 +38,15 @@ class _CodeGenerator:
 
     def get_main_map(self) -> str:
         """Generate main view."""
-        strings = []
-        for actor in self.project.get_actors():
-            strings.append(self._gen_actor(actor))
-        for system in self.project.get_systems():
-            strings.append(self._gen_system(system))
+        strings: list[str] = []
+        strings.extend(
+            self._gen_actor(actor)
+            for actor in self.project.get_actors()
+        )
+        strings.extend(
+            self._gen_system(system)
+            for system in self.project.get_systems()
+        )
         strings.append(self._gen_links())
         return "\n\n".join(strings)
 
@@ -110,29 +115,29 @@ class _CodeGenerator:
         return names
 
     def _gen_links(self) -> str:
-        links = []
+        links: list[str] = []
         names = self._get_d2_names_map()
         for actor in self.project.get_actors():
-            links += [
+            links.extend(
                 _gen_link(
                     names[actor.name], names[link.to], link
                 )
                 for link in actor.links
-            ]
+            )
         for system in self.project.get_systems():
-            links += [
+            links.extend(
                 _gen_link(
                     names[system.name], names[link.to], link
                 )
                 for link in system.links
-            ]
+            )
             for service in self.project.get_services_of_system(system.name):
-                links += [
+                links.extend(
                     _gen_link(
                         names[service.name], names[link.to], link
                     )
                     for link in service.links
-                ]
+                )
         return "\n".join(links)
 
     def _gen_deployments(self) -> list[str]:
@@ -144,7 +149,7 @@ class _CodeGenerator:
         ]
 
 
-def _gen_deployment_rec(
+def _gen_deployment_rec(  # noqa: WPS210
         safe_names: _D2SafeNameStorage,
         prefix: list[str],
         deployment: DeploymentEntity
@@ -152,7 +157,7 @@ def _gen_deployment_rec(
     dep_name = safe_names[deployment.name]
     dep_desc = textwrap.indent(deployment.description, "  ")
     short_desc = textwrap.indent(_gen_short_desc(deployment), "  ")
-    qualname = ".".join(prefix + [dep_name])
+    qualname = ".".join([*prefix, dep_name])
     dep_code = (
         f"{qualname}: |md\n"
         f"  ## {deployment.name}\n"
@@ -164,8 +169,8 @@ def _gen_deployment_rec(
         "}\n"
     )
     deployments = [dep_code]
-    for service in deployment.deploys:
-        deployments.append(
+    deployments.extend(
+        (
             f"{qualname}.{safe_names[service.service_name]}: |md\n"
             f"  ### {service.service_name}\n"
             f"  deploy as {service.deploy_as}\n"
@@ -173,9 +178,11 @@ def _gen_deployment_rec(
             "  shape: rectangle\n"
             "}\n"
         )
+        for service in deployment.deploys
+    )
     for sub_dep in deployment.inner_entities:
         deployments.extend(
-            _gen_deployment_rec(safe_names, prefix + [dep_name], sub_dep)
+            _gen_deployment_rec(safe_names, [*prefix, dep_name], sub_dep)
         )
     return deployments
 
@@ -230,6 +237,7 @@ class D2ProjectGenerator(AbstractProjectGenerator):
 
     @property
     def file_generators(self) -> Mapping[str, FileGenerator]:
+        """Get generators."""
         return {
             "main": self.generate_main,
             "deployments": self.generate_deployments

@@ -1,4 +1,4 @@
-from typing import Mapping
+from collections.abc import Mapping
 
 from aisle.analyser.entities.project import Project
 from aisle.codegen import utils
@@ -18,6 +18,7 @@ class MermaidProjectGenerator(AbstractProjectGenerator):
 
     @property
     def file_generators(self) -> Mapping[str, FileGenerator]:
+        """Get generators."""
         return {
             "context": self.generate_context,
             "containers": self.generate_containers,
