@@ -9,7 +9,8 @@ aisle generate FILENAME
 ```
 After executing this command, there will be files 
 "context", "containers" and "deployment" in a newly
-created directory. These files you can then render
+created directory (files may vary depending on
+generator format). These files you can then render
 with your layout engine of choice (by default it's
 PlantUML).
 
@@ -32,6 +33,10 @@ supported:
 - `mermaid` - has limited support. Essentially it's 
   the same plantuml. Warning: mermaid is not perfect 
   at rendering C4 diagrams (at the moment)
+- `d2` (experimental) - generates diagrams 
+  in [d2lang](https://d2lang.io). It's recommended to 
+  use TALA layout engine. Generates files `main.d2` and
+  `deployments.d2`.
 
 Example:
 ```shell
