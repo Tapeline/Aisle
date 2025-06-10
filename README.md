@@ -52,7 +52,7 @@ Please refer to the [documentation](https://tapeline.github.io/Aisle/docs/)
 ## Planned features
 - [ ] Styling
 - [ ] Icons
-- [ ] D2 as code generation target
+- [x] D2 as code generation target
 
 ## Tech stack
 ![python 3.12+](https://img.shields.io/badge/python-3.12+-blue)
