@@ -91,7 +91,7 @@ from aisle.parser.nodes.links import LinkType
                         system="Blogging System",
                         tech="Postgres",
                         links=[],
-                        tags=[],
+                        tags=["database"],
                     ),
                     "Frontend Service": ServiceEntity(
                         name="Frontend Service",

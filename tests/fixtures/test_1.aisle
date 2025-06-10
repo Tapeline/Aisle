@@ -65,7 +65,7 @@ service Backend:
             Stores info
 
 
-service DB Service:
+service DB Service [database]:
     system = Blogging System
     tech = Postgres
 

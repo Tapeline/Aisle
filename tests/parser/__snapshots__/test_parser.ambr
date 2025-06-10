@@ -14,7 +14,7 @@
   Entity(service Frontend Service []: Text(UI); Attr(system = Blogging System); Attr(tech = Vite+Vue); Links[Link(--> Backend Service HTTP ['Send API requests'])])
   Entity(service Backend []: Text(Provides API
   Maybe split into microservices later); Attr(system = Blogging System); Attr(tech = Litestar, sqlalchemy); Links[Link(--> Metrics Service HTTP ['Send metrics info on each request']); Link(--> DB Service None ['Stores info'])])
-  Entity(service DB Service []: Attr(system = Blogging System); Attr(tech = Postgres))
+  Entity(service DB Service ['database']: Attr(system = Blogging System); Attr(tech = Postgres))
   Entity(external service Metrics Service []: Attr(system = Metrics System))
   Scope(deployment: Blogging app)
   Entity(deployment VPS Deployment []: Text(Docker containers with Docker compose); Entity(deployment Docker compose ['docker_compose']: Deploy(Frontend Service Docker container); Deploy(Backend Service Docker container); Deploy(DB Service Docker container)))

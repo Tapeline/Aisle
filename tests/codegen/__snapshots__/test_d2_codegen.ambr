@@ -1,0 +1,221 @@
+# serializer version: 1
+# name: test_deployments_codegen
+  '''
+  VPS Deployment: |md
+    ## VPS Deployment
+    [Deployment]
+  
+    Docker containers with Docker compose
+  | {
+    shape: rectangle
+    label.near: bottom-left
+  }
+  
+  
+  VPS Deployment.Docker compose: |md
+    ## Docker compose
+    [Deployment]
+  
+  
+  | {
+    shape: rectangle
+    label.near: bottom-left
+  }
+  
+  
+  VPS Deployment.Docker compose.Frontend Service: |md
+    ### Frontend Service
+    deploy as Docker container
+  | {
+    shape: rectangle
+  }
+  
+  
+  VPS Deployment.Docker compose.Backend Service: |md
+    ### Backend Service
+    deploy as Docker container
+  | {
+    shape: rectangle
+  }
+  
+  
+  VPS Deployment.Docker compose.DB Service: |md
+    ### DB Service
+    deploy as Docker container
+  | {
+    shape: rectangle
+  }
+  
+  
+  Provided Metrics: |md
+    ## Provided Metrics
+    [Deployment]
+  
+    Metrics Service is already provided
+  | {
+    shape: rectangle
+    label.near: bottom-left
+  }
+  
+  
+  Provided Metrics.Metrics Service: |md
+    ### Metrics Service
+    deploy as Cloud provider
+  | {
+    shape: rectangle
+  }
+  
+  '''
+# ---
+# name: test_link_directions_codegen
+  '''
+  User: |md
+    ## User
+    [Actor]
+  
+  
+  | {
+    shape: c4-person
+  }
+  
+  
+  System: |md
+    ## System
+    [Software System]
+  
+  
+  | {
+    shape: rectangle
+    label.near: bottom-left
+  }
+  
+  
+  User -> System: ""
+  User <- System: ""
+  User <-> System: ""
+  User <-> System: ""
+  '''
+# ---
+# name: test_main_codegen
+  '''
+  User: |md
+    ## User
+    [Actor]
+  
+    Uses blogging app. Reads and creates posts
+  | {
+    shape: c4-person
+  }
+  
+  
+  Admin: |md
+    ## Admin
+    [Actor]
+  
+    Blog moderator
+  | {
+    shape: c4-person
+  }
+  
+  
+  Blogging System: |md
+    ## Blogging System
+    [Software System]
+  
+    Stores and manages blogs
+  | {
+    shape: rectangle
+    label.near: bottom-left
+  }
+  
+  
+  Blogging System.Frontend Service: |md
+    ## Frontend Service
+    [Container: Vite+Vue]
+  
+    UI
+  | {
+    shape: rectangle
+  }
+  
+  
+  Blogging System.Backend Service: |md
+    ## Backend Service
+    [Container: Litestar, sqlalchemy]
+  
+    Provides API
+    Maybe split into microservices later
+  | {
+    shape: rectangle
+  }
+  
+  
+  Blogging System.DB Service: |md
+    ## DB Service
+    [Container: Postgres]
+  
+  
+  | {
+    shape: cylinder
+  }
+  
+  
+  Metrics System: |md
+    ## Metrics System
+    [Software System (external)]
+  
+    Collects site metrics
+    We will use Yandex Metrics
+  | {
+    shape: rectangle
+    label.near: bottom-left
+  }
+  
+  
+  Metrics System.Metrics Service: |md
+    ## Metrics Service
+    [Container (external): None]
+  
+  
+  | {
+    shape: rectangle
+  }
+  
+  
+  User -> Blogging System: "Uses"
+  Admin -> Blogging System: "Uses"
+  Admin -> Metrics System: "Reviews post metrics"
+  Blogging System -> Metrics System: ""
+  Blogging System.Frontend Service -> Blogging System.Backend Service: "[HTTP] Send API requests"
+  Blogging System.Frontend Service <- User: ""
+  Blogging System.Frontend Service <- Admin: ""
+  Blogging System.Backend Service -> Metrics System.Metrics Service: "[HTTP] Send metrics info on each request"
+  Blogging System.Backend Service -> Blogging System.DB Service: "Stores info"
+  '''
+# ---
+# name: test_name_clashes_codegen
+  '''
+  Plus_c7da77da: |md
+    ## Plus+
+    [Actor]
+  
+  
+  | {
+    shape: c4-person
+  }
+  
+  
+  Plus: |md
+    ## Plus
+    [Software System]
+  
+  
+  | {
+    shape: rectangle
+    label.near: bottom-left
+  }
+  
+  
+  
+  '''
+# ---

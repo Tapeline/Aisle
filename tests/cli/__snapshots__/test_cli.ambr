@@ -37,7 +37,7 @@
       System_Boundary(Blogging_System,"Blogging System"){
           Container(Frontend_Service, "Frontend Service", "UI",,$techn="Vite+Vue")
           Container(Backend_Service, "Backend Service", "Provides API\nMaybe split into microservices later",,$techn="Litestar, sqlalchemy")
-          Container(DB_Service, "DB Service", "",,$techn="Postgres")
+          ContainerDb(DB_Service, "DB Service", "",$tags="database",$techn="Postgres")
       }
   
       System_Boundary(Metrics_System,"Metrics System"){
@@ -121,7 +121,7 @@
   System_Boundary(Blogging_System,"Blogging System"){
       Container(Frontend_Service, "Frontend Service", "UI",$tags="",$techn="Vite+Vue")
       Container(Backend_Service, "Backend Service", "Provides API\nMaybe split into microservices later",$tags="",$techn="Litestar, sqlalchemy")
-      Container(DB_Service, "DB Service", "",$tags="",$techn="Postgres")
+      ContainerDb(DB_Service, "DB Service", "",$tags="database",$techn="Postgres")
   }
   
   System_Boundary(Metrics_System,"Metrics System"){

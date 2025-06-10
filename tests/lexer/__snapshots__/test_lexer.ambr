@@ -275,6 +275,9 @@
   
   KEYWORDservice
   TEXTDB Service
+  LBRACKET[
+  TEXTdatabase
+  RBRACKET]
   COLON:
   NEWLINE
   
